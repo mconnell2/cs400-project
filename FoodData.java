@@ -4,6 +4,7 @@ import java.util.List;
 /**
  * This class represents the backend for managing all 
  * the operations associated with FoodItems
+ * JLB edited
  * 
  * @author sapan (sapan@cs.wisc.edu)
  */
