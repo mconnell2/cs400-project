@@ -6,6 +6,7 @@ import java.util.List;
  * the operations associated with FoodItems
  * JLB edited, and again
  *MHC was here too.
+ *MAL test
  * 
  * @author sapan (sapan@cs.wisc.edu)
  */
