@@ -135,13 +135,24 @@ public class Main extends Application {
         System.out.println("Save Button pressed");
       }
     });
+    
+ // add new food item
+    Button addFoodButton = createButton("Add New Food");
+    addFoodButton.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        // TODO Auto-generated method stub
+        System.out.println("Add New Food Button pressed");
+      }
+    });
 
     // add food to menu
-    Button addButton = createButton("");
+    Button addToMenuButton = createButton("");
     Image addImage = new Image(getClass().getResourceAsStream("ArrowRight.png"));
-    addButton.setGraphic(new ImageView(addImage));
+    addToMenuButton.setGraphic(new ImageView(addImage));
     
-    addButton.setOnAction(new EventHandler<ActionEvent>() {
+    addToMenuButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent event) {
@@ -168,7 +179,8 @@ public class Main extends Application {
     // Add elements to button Grid
     buttonGrid.add(loadButton, 1, 1, 1, 1);
     buttonGrid.add(saveButton, 1, 2, 1, 1);
-    buttonGrid.add(addButton, 1, 15, 1, 1);
+    buttonGrid.add(addFoodButton, 1, 3, 1, 1);
+    buttonGrid.add(addToMenuButton, 1, 15, 1, 1);
     buttonGrid.add(removeButton, 1, 16, 1, 1);
     hbox.getChildren().add(buttonGrid);
 
