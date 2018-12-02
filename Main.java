@@ -1,3 +1,22 @@
+/**
+ * Filename: Main.java 
+ * Project: Final Project - Food List
+ * Authors: Epic lecture 4
+ * Julie Book - jlsauer@wisc.edu
+ * David Billmire
+ * Mark Connell
+ * Michelle Lindblom
+ *
+ * Semester: Fall 2018 
+ * Course: CS400
+ * 
+ * Due Date: 12/2/18 11:59 pm 
+ * Version: 1.0
+ * 
+ * Credits: none
+ * 
+ * Bugs: no known bugs
+ */
 package application;
 
 import javafx.application.Application;
@@ -26,7 +45,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-  // Names of foods that are avaiable to display
+  // Names of foods that are available to display
   static ObservableList<String> names = FXCollections.observableArrayList();
 
   /*
@@ -117,7 +136,7 @@ public class Main extends Application {
       }
     });
 
-    // add
+    // add food to menu
     Button addButton = createButton("");
     Image addImage = new Image(getClass().getResourceAsStream("ArrowRight.png"));
     addButton.setGraphic(new ImageView(addImage));
@@ -132,7 +151,7 @@ public class Main extends Application {
       }
     });
 
-    // remove
+    // remove food from menu 
     Button removeButton = createButton("");
     Image removeImage = new Image(getClass().getResourceAsStream("ArrowLeft.png"));
     removeButton.setGraphic(new ImageView(removeImage));
