@@ -5,18 +5,12 @@ import java.util.List;
 /**
  * This class represents a food item with all its properties.
  * 
- * @author MHC testing
- * Another comments here
+ * @author Mark Connell
  */
 public class FoodItem {
-    // The name of the food item.
-    private String name;
-
-    // The id of the food item.
-    private String id;
-
-    // Map of nutrients and value.
-    private HashMap<String, Double> nutrients;
+    private String name; //the name of the food item
+    private String id; //the id of the food item
+    private HashMap<String, Double> nutrients; //map of nutrients and value for food item
     
     /**
      * Constructor
@@ -24,7 +18,9 @@ public class FoodItem {
      * @param id unique id of the food item 
      */
     public FoodItem(String id, String name) {
-        // TODO : Complete
+      this.id = id;
+      this.name = name;
+      nutrients = new HashMap<String, Double>();
     }
     
     /**
@@ -42,8 +38,7 @@ public class FoodItem {
      * @return id of the food item
      */
     public String getID() {
-        // TODO : Complete
-        return null;
+      return id;
     }
     
     /**
@@ -52,8 +47,7 @@ public class FoodItem {
      * @return nutrients of the food item
      */
     public HashMap<String, Double> getNutrients() {
-        // TODO : Complete
-        return null;
+        return nutrients;
     }
 
     /**
@@ -61,16 +55,42 @@ public class FoodItem {
      * If nutrient already exists, updates its value.
      */
     public void addNutrient(String name, double value) {
-        // TODO : Complete
+      nutrients.put(name, value);
     }
 
     /**
      * Returns the value of the given nutrient for this food item. 
      * If not present, then returns 0.
      */
-    public double getNutrientValue(String name) {
-        // TODO : Complete
-        return 0;
+    public double getNutrientValue(String name) {      
+      if (nutrients.containsKey(name) != true) return 0;
+      return nutrients.get(name);      
     }
     
+    //TODO remove this later, useful for testing/PQA for now
+    public static void main (String[] args) {
+
+      //create two food items
+      FoodItem fi1 = new FoodItem("p1", "pasta");
+      FoodItem fi2 = new FoodItem("p2", "pizza");
+
+      //test name + ID functions
+      System.out.println(fi1.getID());
+      System.out.println(fi2.getName());
+      
+      //test adding + getting nutrient
+      fi1.addNutrient("fat", 0.1);
+      fi2.addNutrient("fat", 10.0);
+      fi2.addNutrient("fat", 12.0);
+      fi2.addNutrient("carbs", 16.0);
+
+      System.out.println("fat in fi1:   " + fi2.getNutrientValue("fat"));
+      System.out.println("fat in fi2:   " + fi2.getNutrientValue("fat"));
+      System.out.println("carbs in fi2: " + fi2.getNutrientValue("carbs"));
+      System.out.println("zinc in fi2:  " + fi2.getNutrientValue("zinc"));
+      
+      //test getNutrients
+      HashMap<String, Double> nutrientHM = fi2.getNutrients();
+      System.out.println(nutrientHM);
+    }
 }
