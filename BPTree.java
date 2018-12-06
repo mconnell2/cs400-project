@@ -1,3 +1,5 @@
+package application;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -311,7 +313,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         LeafNode() {
             super();
             values = new ArrayList<V>();
-            // TODO : Complete
         }
         
         /**
@@ -413,7 +414,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /*
-         * TODO
+         * Recursive helper function used to build return value list
          */
         private void previousRecurse(List<V> retVals) {
         	if(previous != null) {
@@ -422,7 +423,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	retVals.addAll(values);
         }
         
-        /**TODO
+        /**
          * Starts at searchIndex and appends matching keys to retVals, recursing to the next node
          */
 		private void appendWhileMatching(K key, int searchIndex, List<V> retVals) {
@@ -438,7 +439,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 			}	
 		}
         
-		/**TODO
+		/**
          * Starts at searchIndex and appends matching keys to retVals, recursing to the next node
          */
 		private void appendGTE(K key, int searchIndex, List<V> retVals) {
