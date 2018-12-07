@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,13 +41,31 @@ public class FoodData implements FoodDataADT<FoodItem> {
       // TODO: Complete
     }
     
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#loadFoodItems(java.lang.String)
+    /**
+     * Loads food items from a file into the database
+     * @param filePath - path to a file to load
      */
     @Override
     public void loadFoodItems(String filePath) {
-        // TODO : Complete
+        try {
+			Files.lines(Paths.get(filePath))
+				.map(line -> { 
+					String[] parts = line.split(",");
+					FoodItem newItem = null;
+					if (parts.length > 1) {
+						newItem = new FoodItem(parts[0], parts[1]);
+						for (int i = 2; i < parts.length; i += 2) {
+							newItem.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+						}
+					}
+					return newItem;
+				})
+				.filter(a -> a != null)
+				.forEach(item -> this.addFoodItem(item));
+		} catch (IOException e) {
+			System.out.println("Failed to parse file: " + filePath);
+			e.printStackTrace();
+		}
     }
 
     /*
