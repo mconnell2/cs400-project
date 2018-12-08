@@ -21,11 +21,15 @@ public class Rule {
   }
 
   /*
-   * constructor parses a string; does no validation on parts of string, so string must be validated
-   * first use isValidRuleString to validate the object before instantiating a rule TODO this is
-   * going to throw exceptions if we have a bad string. Is there a better way to handle this?
+   * constructor parses a string; if string is invalid, will throw IllegalArgumentException
+   * use isValidRuleString to validate the object before instantiating a rule
    */
-  public Rule(String ruleData) {
+  public Rule(String ruleData) throws IllegalArgumentException  {
+
+    //throw exception if string isn't properly for
+    if (isValidRuleString(ruleData) != null) throw new IllegalArgumentException();
+    
+    //parse and store string
     String[] ruleArray = ruleData.split(" ");
     this.ruleNutrient = ruleArray[0];
     this.comparator = ruleArray[1];
@@ -47,11 +51,11 @@ public class Rule {
       return "enter a rule with fewer spaces";
 
     // validate string
-    // TODO add validation here - see if David has something in FoodData - enum?
     String ruleNutrient = ruleArray[0];
-    if (ruleNutrient == null)
+    if (ruleNutrient == null || !Nutrient.contains(ruleNutrient)) {
       return "enter a valid nutrient";
-
+    }
+    
     // validate comparator
     String comparator = ruleArray[1];
     if (!comparator.equals(">=") && !comparator.equals("==") && !comparator.equals("<="))
@@ -59,14 +63,22 @@ public class Rule {
 
     // validate value
     try {
-      Double ruleValue = Double.parseDouble(ruleArray[2]);
+      String doubleString = ruleArray[2];
+     
+      //disallow users or file entering a double like "14d"
+      if (doubleString.substring(doubleString.length()-1, doubleString.length()).matches("\\D"))
+        return "enter a valid nutrient amount";
+
+      //parse double - will throw exception if not double
+      Double ruleValue = Double.parseDouble(doubleString);
+      
     } catch (Exception e) {
       return "enter a valid nutrient amount";
     }
 
     return null;
   }
-
+  
   /*
    * accessor for nutrient from rule
    */
@@ -120,14 +132,11 @@ public class Rule {
     // create two food items
     FoodItem fi1 = new FoodItem("p1", "pasta");
     FoodItem fi2 = new FoodItem("p2", "pizza");
-    fi1.addNutrient("fat", 0.1);
-    fi2.addNutrient("fat", 10.0);
     fi2.addNutrient("fat", 12.0);
     fi2.addNutrient("carbs", 16.0);
 
-
     // parse rule; maybe use this code later
-    String ruleData = "fat == 1212.1adfa";
+    String ruleData = "fat >= 14d";
 
     // testing evaluation method
     System.out.println(Rule.isValidRuleString(ruleData));
