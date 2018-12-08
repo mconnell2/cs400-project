@@ -126,6 +126,8 @@ public class Meal {
     
     //analyzing meal for totals
     HashMap<String, Double> mealNutrients = meal.analyzeMeal();
+    
+    System.out.println("Retrieving carbs: " + meal.analyzeMeal().get("carbs"));
     System.out.println(mealNutrients.toString());       
   }
 }

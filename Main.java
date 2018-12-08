@@ -17,22 +17,34 @@
  * 
  * Bugs: no known bugs
  */
-package application;
+//package application;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -45,8 +57,12 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-  // Names of foods that are available to display
+  //data members for various aspects of food application
   static ObservableList<String> names = FXCollections.observableArrayList();
+  Meal meal;
+  ObservableList<String> filterRules = FXCollections.observableArrayList();
+  String nameFilter = null;
+  
 
   /*
    * (non-Javadoc)
@@ -56,6 +72,12 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle("Food Project");
     
+    meal = new Meal();
+    FoodItem fi1 = new FoodItem("p1", "pasta");
+    FoodItem fi2 = new FoodItem("p2", "pizza");
+    FoodItem fi3 = new FoodItem("p3", "pickles");
+    meal.addFoodItem(fi1); meal.addFoodItem(fi2); meal.addFoodItem(fi3);
+   
     // information about Stage
     int width = 900;
     int height = 500;
@@ -71,8 +93,9 @@ public class Main extends Application {
     Color backgroundColor = Color.AZURE;
     Scene scene = new Scene(root, width + 50, height, backgroundColor);
 
-
+    //////////////
     // Column 1
+    //////////////
     GridPane foodGrid = new GridPane();
     foodGrid.setHgap(10);
     foodGrid.setVgap(10);
@@ -87,11 +110,147 @@ public class Main extends Application {
     filterButton.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        // TODO NEED to create a new window here
-        System.out.println("Filter Button pressed");
+        
+        /////////////////
+        //FILTER WINDOW//
+        /////////////////
+        
+        ///////////////////////////////
+        ////Prepare objects for VBox///
+        ///////////////////////////////
+                
+        //Text objects
+        Text nameFilterTitle = new Text("Name Filter");
+        nameFilterTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+        nameFilterTitle.setFocusTraversable(true);  //so that name field doesn't have focus immediately
+        Text nutrientFilterTitle = new Text("Nutrient Filters");
+        nutrientFilterTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+        Text ruleWarningText = new Text("Invalid rule."); //string will be updated later
+        ruleWarningText.setFill(Color.RED);
+        ruleWarningText.setVisible(false);
+
+        //Label objects
+        Label nameHelpLabel = new Label("Include foods with names that contain the following text:");
+        Label nutrientHelpLabel = new Label("Include foods that pass nutrient rules (ex. fat >= 15)."
+            + "\n  Supported nutrients are calories, carbohydrate, fat, fiber, and protein."
+            + "\n  Supported comparators are <=, ==, >=.");
+        nutrientHelpLabel.setWrapText(true);
+        Label currentFiltersLabel = new Label("Current Filters");
+       
+        //TextField objects for input
+        TextField nameFilterTextField = new TextField(nameFilter);
+        nameFilterTextField.setPromptText("Enter text for name filter (ex. beans)");
+        TextField nutrientFilterTextField = new TextField();
+        nutrientFilterTextField.setPromptText("Enter rule (ex. fat > 100.0)");
+        
+        //ListView object for displaying rules
+        ListView<String> ruleListView = new ListView<>();
+        ruleListView.setItems(filterRules);
+        ruleListView.setPrefHeight(150);
+        
+        //Buttons
+        Button addFilterButton = createButton("_Add Filter");
+        addFilterButton.setPrefWidth(150);
+        Button removeFilterButton = createButton("_Remove Selected Filter");
+        removeFilterButton.setPrefWidth(150);
+        Button acceptButton = createButton("_Save Filters");
+        acceptButton.setPrefWidth(150);
+        
+        /////////////////////////////////////////
+        //put all controls into main VBox control
+        //this uses some HBox controls as well
+        /////////////////////////////////////////
+
+        VBox filterVBox = new VBox(5);
+        filterVBox.setPadding(new Insets(10));
+        filterVBox.setBackground(null);
+
+        //name filter controls and nutrient filter title and help text
+        filterVBox.getChildren().addAll(nameFilterTitle,nameHelpLabel,nameFilterTextField);
+        filterVBox.getChildren().addAll(nutrientFilterTitle,nutrientHelpLabel);
+        
+        //side by side nutrient filter text box, warning message, and add button
+        HBox addNutrientFilterHBox = new HBox(10);
+        Region spacer1 = new Region();
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        addNutrientFilterHBox.getChildren().addAll(nutrientFilterTextField,ruleWarningText,spacer1,addFilterButton);
+        filterVBox.getChildren().add(addNutrientFilterHBox);
+
+        //side by side filter header and remove button
+        HBox currentFilterHBox = new HBox(10);
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+        currentFilterHBox.getChildren().addAll(currentFiltersLabel,spacer2,removeFilterButton);
+        filterVBox.getChildren().add(currentFilterHBox);
+
+        //rule list
+        filterVBox.getChildren().add(ruleListView);
+
+        //side by side spacer and accept button
+        HBox acceptButtonHBox = new HBox(10);
+        Region spacer3 = new Region();
+        HBox.setHgrow(spacer3, Priority.ALWAYS);
+        acceptButtonHBox.getChildren().addAll(spacer3,acceptButton);
+        filterVBox.getChildren().add(acceptButtonHBox);
+                        
+        //prepare and show stage
+       // Group filterRoot = new Group(filterVBox); 
+        Scene scene = new Scene(filterVBox, 450, 450, Color.LIGHTCORAL);
+        Stage ruleStage = new Stage();
+        ruleStage.setTitle("Enter/Edit Filter(s)");
+        ruleStage.setScene(scene);
+        
+        //handle closing window via Windows X - will save current name filter
+        ruleStage.setOnCloseRequest(windowEvent ->  {
+          nameFilter = nameFilterTextField.getText();
+        });
+        ruleStage.show();
+        
+        
+        ////////////////////////////////////////
+        ////BUTTON ACTIONS FOR FILTER WINDOW////
+        ////////////////////////////////////////
+
+        //add filter button will save rule or will show error message
+        addFilterButton.setOnAction(actionEvent ->  {
+  
+            //validate entered rule string
+            String errorMessage = Rule.isValidRuleString(nutrientFilterTextField.getText());
+          
+            //if no error message, save rule
+            if (errorMessage == null) {
+              filterRules.add(nutrientFilterTextField.getText());
+              ruleListView.refresh();
+              ruleWarningText.setVisible(false);
+            }
+          
+           //otherwise, show inline warning message
+            else {
+              ruleWarningText.setText(errorMessage);
+              ruleWarningText.setVisible(true);
+            }           
+        });
+        
+        //remove filter button will remove current filter, if one is selected
+        removeFilterButton.setOnAction(actionEvent -> {
+          filterRules.remove(ruleListView.getSelectionModel().getSelectedItem());
+          ruleListView.refresh();
+        });
+
+        //accept button will save name filter and close window
+        acceptButton.setOnAction(actionEvent -> {
+          nameFilter = nameFilterTextField.getText();
+          ruleStage.close();
+        });
+            
       }
     });
 
+    /////////////////////////
+    ////END FILTER WINDOW////
+    /////////////////////////
+
+        
     // Title for food list
     Text foodTitle = new Text("Food List");
     foodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
@@ -197,8 +356,8 @@ public class Main extends Application {
     menuTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
     
     // Meal List
-    ListView<String> menuList = new ListView<>();
-    menuList.setItems(names);
+    ListView<FoodItem> menuList = new ListView<>();
+    menuList.setItems(meal.getMeal());
     menuList.setPrefWidth(350);
     
     // Nutrition title
@@ -248,6 +407,7 @@ public class Main extends Application {
     button.setText(name);
     button.setPrefWidth(125);
     return button;
+    
   }
 
   /*
@@ -261,6 +421,14 @@ public class Main extends Application {
     names.add("Lancaster_SoftCremesButterscotchCaramel");
     names.add("Kemps_FatFreeSkimMilk");
 
+    //create food items
+    FoodItem fi1 = new FoodItem("p1", "pasta");
+    FoodItem fi2 = new FoodItem("p2", "pizza");
+    FoodItem fi3 = new FoodItem("p3", "pickles");
+    FoodItem fi4 = new FoodItem("p4", "pizza");
+    
+    
+    
     launch(args);
   }
 
