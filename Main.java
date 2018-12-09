@@ -518,11 +518,6 @@ public class Main extends Application {
   }
   
 
-    button.setPrefWidth(125);
-    return button;
-    
-  }
-
   /*
    * main method that will be run by default and will launch the UI
    */
