@@ -90,11 +90,6 @@ public class Main extends Application {
     
     ListView<FoodItem> mealList = new ListView<FoodItem>();
     ListView<FoodItem> foodList = new ListView<FoodItem>();
-    
-    // information about Stage
-    int width = 900;
-    int height = 500;
-    String font = "Verdana";
 
     // create horizontal box to add our 3 grid elements
     HBox hbox = new HBox(10);
