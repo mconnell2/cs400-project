@@ -67,12 +67,10 @@ import javafx.util.Callback;
  */
 public class Main extends Application {
 
-  // Names of foods that are available to display
-  static ObservableList<FoodItem> foodItemList = FXCollections.observableArrayList();
-  static ObservableList<FoodItem> mealFoodItems = FXCollections.observableArrayList();
-  Meal meal = new Meal();
-  ObservableList<String> filterRules = FXCollections.observableArrayList();
+  
   String nameFilter = null;
+  Meal meal = new Meal();
+  
   
 
   /*
@@ -81,6 +79,13 @@ public class Main extends Application {
    */
   @Override
   public void start(Stage primaryStage) throws Exception {
+   // Names of foods that are available to display
+    FoodData foodData = new FoodData();
+    foodData.loadFoodItems("foodItems.txt");
+    List<FoodItem> loadFoodList = foodData.getAllFoodItems();  
+    ObservableList<FoodItem> foodItemList = FXCollections.observableArrayList(loadFoodList);
+    ObservableList<String> filterRules = FXCollections.observableArrayList();
+    
     primaryStage.setTitle("Food Project");
     
 
@@ -91,10 +96,6 @@ public class Main extends Application {
     ListView<FoodItem> mealList = new ListView<FoodItem>();
     ListView<FoodItem> foodList = new ListView<FoodItem>();
     
-    // information about Stage
-    int width = 900;
-    int height = 500;
-    String font = "Verdana";
 
     // create horizontal box to add our 3 grid elements
     HBox hbox = new HBox(10);
@@ -375,12 +376,7 @@ public class Main extends Application {
     Image addImage = new Image(getClass().getResourceAsStream("ArrowRight.png"));
     addToMealButton.setGraphic(new ImageView(addImage));
     
-    addToMealButton.setOnAction(actionEvent -> {
-        FoodItem foodItem = foodList.getSelectionModel().getSelectedItem();
-        meal.addFoodItem(foodItem);
-        mealList.refresh();
-        
-    });
+
 
     // remove food from meal
     Button removeButton = createButton("");
@@ -421,7 +417,6 @@ public class Main extends Application {
     
     
     // Meal List
-    // mealList.setItems(mealFoodItems);
     mealList.setItems(meal.getMeal());
     mealList.setPrefWidth(350);
     mealList.setCellFactory(new Callback<ListView<FoodItem>,ListCell<FoodItem>>() {
@@ -438,7 +433,7 @@ public class Main extends Application {
               else {
               setText(item.getName());
               }
-              
+   
           }
       };
 
@@ -468,6 +463,25 @@ public class Main extends Application {
     protein.setFont(Font.font(font, 16));
     
 
+    // ADD TO MEAL BUTTON
+    addToMealButton.setOnAction(actionEvent -> {
+      FoodItem foodItem = foodList.getSelectionModel().getSelectedItem();
+      meal.addFoodItem(foodItem);
+      mealList.refresh();
+      calories.setText("Calories: " + meal.analyzeMeal().get("calories"));
+      fat.setText("Fat: " + meal.analyzeMeal().get("fat"));
+      carbs.setText("Carbohydrate: " + meal.analyzeMeal().get("carbs"));
+      fiber.setText("Fiber: " + meal.analyzeMeal().get("fiber"));
+      protein.setText("Protein: " + meal.analyzeMeal().get("protein"));
+      
+      mealGrid.getChildren().removeAll(calories, fat, carbs, fiber, protein);
+      mealGrid.add(calories, 1, 4, 1, 1);
+      mealGrid.add(fat, 1, 5, 1, 1);
+      mealGrid.add(carbs, 1, 6, 1, 1);
+      mealGrid.add(fiber, 2, 4, 1, 1);
+      mealGrid.add(protein, 2, 5, 1, 1);
+      
+  });
     
     // Add info to Grid
     mealGrid.add(mealTitle, 1, 1, 1, 1);
@@ -523,26 +537,11 @@ public class Main extends Application {
   }
   
 
-    button.setPrefWidth(125);
-    return button;
-    
-  }
-
   /*
    * main method that will be run by default and will launch the UI
    */
   public static void main(String[] args) {
-    
-    
-    // TODO hard coded names for now - will be loading this from a list
-    //names.add("Yoplait_GreekYogurtLemon");
-    //names.add("Lancaster_SoftCremesButterscotchCaramel");
-    //names.add("Kemps_FatFreeSkimMilk");
-    foodItemList.add(new FoodItem("p1", "pasta"));
-    foodItemList.add(new FoodItem("p2", "pizza"));
-    foodItemList.add(new FoodItem("p3", "pickles"));
-    foodItemList.add(new FoodItem("p4", "pizza"));
-   
+        
     
     launch(args);
   }
