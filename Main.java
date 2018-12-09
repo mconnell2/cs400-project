@@ -17,8 +17,8 @@
  * 
  * Bugs: no known bugs
  */
-//package application;
 
+package application;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -28,6 +28,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -50,16 +59,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
- * Main class that will create a Food List UI where a user can add/remove food items from a menu
+ * Main class that will create a Food List UI where a user can add/remove food items from a meal
  * They can also load and save from a file and filter the food list 
  */
 public class Main extends Application {
 
-  //data members for various aspects of food application
-  static ObservableList<String> names = FXCollections.observableArrayList();
-  Meal meal;
+  // Names of foods that are available to display
+  static ObservableList<FoodItem> foodItemList = FXCollections.observableArrayList();
+  static ObservableList<FoodItem> mealFoodItems = FXCollections.observableArrayList();
+  Meal meal = new Meal();
   ObservableList<String> filterRules = FXCollections.observableArrayList();
   String nameFilter = null;
   
@@ -72,12 +83,14 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle("Food Project");
     
-    meal = new Meal();
-    FoodItem fi1 = new FoodItem("p1", "pasta");
-    FoodItem fi2 = new FoodItem("p2", "pizza");
-    FoodItem fi3 = new FoodItem("p3", "pickles");
-    meal.addFoodItem(fi1); meal.addFoodItem(fi2); meal.addFoodItem(fi3);
-   
+
+    // information about Stage
+    int height = 500;
+    String font = "Verdana";
+    
+    ListView<FoodItem> mealList = new ListView<FoodItem>();
+    ListView<FoodItem> foodList = new ListView<FoodItem>();
+    
     // information about Stage
     int width = 900;
     int height = 500;
@@ -87,15 +100,15 @@ public class Main extends Application {
     HBox hbox = new HBox(10);
     hbox.setTranslateX(10);
     hbox.setTranslateY(10);
-
+    
     // Main root group 
     Group root = new Group(hbox); 
     Color backgroundColor = Color.AZURE;
-    Scene scene = new Scene(root, width + 50, height, backgroundColor);
+    Scene scene = new Scene(root, 950, height, backgroundColor);
 
-    //////////////
+    //////////////////
     // Column 1
-    //////////////
+    /////////////////
     GridPane foodGrid = new GridPane();
     foodGrid.setHgap(10);
     foodGrid.setVgap(10);
@@ -250,26 +263,55 @@ public class Main extends Application {
     ////END FILTER WINDOW////
     /////////////////////////
 
-        
     // Title for food list
     Text foodTitle = new Text("Food List");
     foodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
 
     // Food list
-    ListView<String> foodList = new ListView<>();
-    foodList.setItems(names);
+    foodList.setItems(foodItemList);
+    foodList.setCellFactory(new Callback<ListView<FoodItem>,ListCell<FoodItem>>() {
+
+      @Override
+      public ListCell<FoodItem> call(ListView<FoodItem> param) {
+        ListCell<FoodItem> cell = new ListCell<FoodItem>() {
+          @Override
+          public void updateItem(FoodItem item, boolean empty) {
+              super.updateItem(item, empty);
+              if (empty) {
+                setText(null);
+              }
+              else {
+              setText(item.getName());
+              }
+              
+          }
+      };
+
+      return cell;
+      }
+    });
+
     foodList.setPrefWidth(350);
+    
+    // Food count
+    Text foodCount = new Text("Food Count = " + foodItemList.size());
+    foodCount.setFont(Font.font(font, 12));
+
 
     // Add elements to the Grid
     foodGrid.add(foodTitle, 1, 1, 1, 1);
     GridPane.setHalignment(filterButton, HPos.RIGHT);
     foodGrid.add(filterButton, 2, 1, 1, 1);
     foodGrid.add(foodList, 1, 2, 2, 1);
+    GridPane.setHalignment(foodCount, HPos.RIGHT);
+    foodGrid.add(foodCount, 1, 3, 2, 1);
     hbox.getChildren().add(foodGrid);
 
-
+    ///////////////////
     // Column 2
+    //////////////////
     GridPane buttonGrid = new GridPane();
+    buttonGrid.setPadding(new Insets(45, 0, 0, 0));
     buttonGrid.setHgap(10);
     buttonGrid.setVgap(10);
     
@@ -281,6 +323,9 @@ public class Main extends Application {
       public void handle(ActionEvent event) {
         // TODO Auto-generated method stub
         System.out.println("Load Button pressed");
+        // get a file
+        // call FoodData.load()
+        // FoodList.addAll(FoodData.getAllFoodItems())
       }
     });
 
@@ -292,6 +337,11 @@ public class Main extends Application {
       public void handle(ActionEvent event) {
         // TODO Auto-generated method stub
         System.out.println("Save Button pressed");
+        // file picker
+        // open a file
+        // loop through all the food items in the database
+        // write them to a file
+        // close the file
       }
     });
     
@@ -303,93 +353,155 @@ public class Main extends Application {
       public void handle(ActionEvent event) {
         // TODO Auto-generated method stub
         System.out.println("Add New Food Button pressed");
+
+        
+        // Call the pop up
+        
+      }
+    });
+ // clear Meal
+    Button clearMealButton = createButton("Clear Meal");
+    clearMealButton.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        meal.clearMeal();
+        mealList.refresh();
       }
     });
 
-    // add food to menu
-    Button addToMenuButton = createButton("");
+    // add food to meal
+    Button addToMealButton = createButton("");
     Image addImage = new Image(getClass().getResourceAsStream("ArrowRight.png"));
-    addToMenuButton.setGraphic(new ImageView(addImage));
+    addToMealButton.setGraphic(new ImageView(addImage));
     
-    addToMenuButton.setOnAction(new EventHandler<ActionEvent>() {
+    addToMealButton.setOnAction(actionEvent -> {
+        FoodItem foodItem = foodList.getSelectionModel().getSelectedItem();
+        meal.addFoodItem(foodItem);
+        mealList.refresh();
+        
+    });
+
+    // remove food from meal
+    Button removeButton = createButton("");
+    Image removeImage = new Image(getClass().getResourceAsStream("ArrowLeft.png"));
+    removeButton.setGraphic(new ImageView(removeImage));
+    removeButton.setOnAction(actionEvent -> {
+      int foodIndex = foodList.getSelectionModel().getSelectedIndex();
+      // TODO remove this
+      System.out.println("removed:" + foodIndex + "-"
+       + foodList.getSelectionModel().getSelectedItem().getName());
+      meal.removeFoodItem(foodIndex);
+      mealList.refresh();
+    });
+    
+
+    // Add elements to button Grid
+    buttonGrid.add(loadButton, 0, 0, 1, 1);
+    buttonGrid.add(saveButton, 0, 1, 1, 1);
+    buttonGrid.add(addFoodButton, 0, 2, 1, 1);
+    buttonGrid.add(clearMealButton, 0, 3, 1, 1);
+    buttonGrid.add(addToMealButton, 0, 10, 1, 1);
+    buttonGrid.add(removeButton, 0, 11, 1, 1);
+    hbox.getChildren().add(buttonGrid);
+
+    ////////////////////
+    // Column 3 - Meal and Nutrition info
+    ////////////////////
+    GridPane mealGrid = new GridPane();
+    mealGrid.setHgap(10);
+    mealGrid.setVgap(10);
+    mealGrid.setPrefHeight(height * 0.9);
+
+
+    // Meal Title
+    Text mealTitle = new Text("Meal");
+    mealTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+    
+    
+    
+    // Meal List
+    // mealList.setItems(mealFoodItems);
+    mealList.setItems(meal.getMeal());
+    mealList.setPrefWidth(350);
+    mealList.setCellFactory(new Callback<ListView<FoodItem>,ListCell<FoodItem>>() {
+
+      @Override
+      public ListCell<FoodItem> call(ListView<FoodItem> param) {
+        ListCell<FoodItem> cell = new ListCell<FoodItem>() {
+          @Override
+          public void updateItem(FoodItem item, boolean empty) {
+              super.updateItem(item, empty);
+              if (empty) {
+                setText(null);
+              }
+              else {
+              setText(item.getName());
+              }
+              
+          }
+      };
+
+      return cell;
+      }
+    });
+   
+    // Nutrition title
+    Text nutritionTitle = new Text("Meal Nutrition");
+    nutritionTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+
+    
+    // Nutrition information
+    Text calories = new Text("Calories: 0"); // TODO get actual data
+    calories.setFont(Font.font(font, 16));
+    
+    Text fat = new Text("Fat: 0 g"); // TODO get actual data
+    fat.setFont(Font.font(font, 16));
+    
+    Text carbs = new Text("Carbohydrate: 0 g"); // TODO get actual data
+    carbs.setFont(Font.font(font, 16));
+    
+    Text fiber = new Text("Fiber: 0 g"); // TODO get actual data
+    fiber.setFont(Font.font(font, 16));
+    
+    Text protein = new Text("Protein: 0 g"); // TODO get actual data
+    protein.setFont(Font.font(font, 16));
+    
+
+    
+    // Add info to Grid
+    mealGrid.add(mealTitle, 1, 1, 1, 1);
+    mealGrid.add(mealList, 1, 2, 2, 1);
+    mealGrid.add(nutritionTitle, 1, 3, 2, 1);
+    mealGrid.add(calories, 1, 4, 1, 1);
+    mealGrid.add(fat, 1, 5, 1, 1);
+    mealGrid.add(carbs, 1, 6, 1, 1);
+    mealGrid.add(fiber, 2, 4, 1, 1);
+    mealGrid.add(protein, 2, 5, 1, 1);
+    hbox.getChildren().add(mealGrid);
+    
+    ////////
+    // Column 4
+    //////
+    GridPane lastColumnGrid = new GridPane();
+    lastColumnGrid.setHgap(10);
+    lastColumnGrid.setVgap(10);
+    
+    // Help Button
+    Button helpButton = createButton("?");
+    helpButton.setPrefWidth(20);
+    helpButton.setFont(Font.font(font,FontWeight.BOLD,16));
+    helpButton.setOnAction(new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent event) {
         // TODO Finish this
-        System.out.println(
-            "Add Button pressed on: " + foodList.getSelectionModel().selectedItemProperty());
+        System.out.println("Help button pressed");
       }
     });
+    lastColumnGrid.add(helpButton,1,1);
+    hbox.getChildren().add(lastColumnGrid);
 
-    // remove food from menu 
-    Button removeButton = createButton("");
-    Image removeImage = new Image(getClass().getResourceAsStream("ArrowLeft.png"));
-    removeButton.setGraphic(new ImageView(removeImage));
-    
-    removeButton.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent event) {
-        // TODO Auto-generated method stub
-        System.out.println("Remove Button pressed");
-      }
-    });
-
-    // Add elements to button Grid
-    buttonGrid.add(loadButton, 1, 1, 1, 1);
-    buttonGrid.add(saveButton, 1, 2, 1, 1);
-    buttonGrid.add(addFoodButton, 1, 3, 1, 1);
-    buttonGrid.add(addToMenuButton, 1, 15, 1, 1);
-    buttonGrid.add(removeButton, 1, 16, 1, 1);
-    hbox.getChildren().add(buttonGrid);
-
-
-    // Column 3 - Meal and Nutrition info
-    GridPane menuGrid = new GridPane();
-    menuGrid.setHgap(10);
-    menuGrid.setVgap(10);
-    menuGrid.setPrefHeight(height * 0.9);
-
-
-    // Meal Title
-    Text menuTitle = new Text("Menu");
-    menuTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
-    
-    // Meal List
-    ListView<FoodItem> menuList = new ListView<>();
-    menuList.setItems(meal.getMeal());
-    menuList.setPrefWidth(350);
-    
-    // Nutrition title
-    Text nutritionTitle = new Text("Meal Nutrition");
-    nutritionTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
-    menuGrid.add(nutritionTitle, 1, 3, 2, 1);
-
-    // Nutrition information
-    Text calories = new Text("Calories: 2000"); // TODO get actual data
-    calories.setFont(Font.font(font, 16));
-    
-    Text fat = new Text("Fat: 10 g"); // TODO get actual data
-    fat.setFont(Font.font(font, 16));
-    
-    Text carbs = new Text("Carbohydrate: 50 g"); // TODO get actual data
-    carbs.setFont(Font.font(font, 16));
-    
-    Text fiber = new Text("Fiber: 12 g"); // TODO get actual data
-    fiber.setFont(Font.font(font, 16));
-    
-    Text protein = new Text("Protein: 20 g"); // TODO get actual data
-    protein.setFont(Font.font(font, 16));
-    
-    // Add info to Grid
-    menuGrid.add(menuTitle, 1, 1, 2, 1);
-    menuGrid.add(menuList, 1, 2, 2, 1);
-    menuGrid.add(calories, 1, 4, 1, 1);
-    menuGrid.add(fat, 1, 5, 1, 1);
-    menuGrid.add(carbs, 1, 6, 1, 1);
-    menuGrid.add(fiber, 2, 4, 1, 1);
-    menuGrid.add(protein, 2, 5, 1, 1);
-    hbox.getChildren().add(menuGrid);
     
     // Show Stage
     primaryStage.setScene(scene);
@@ -405,6 +517,12 @@ public class Main extends Application {
     Button button = new Button();
 
     button.setText(name);
+
+    button.setPrefWidth(125);  // TODO Make this width a parameter
+    return button;
+  }
+  
+
     button.setPrefWidth(125);
     return button;
     
@@ -417,17 +535,14 @@ public class Main extends Application {
     
     
     // TODO hard coded names for now - will be loading this from a list
-    names.add("Yoplait_GreekYogurtLemon");
-    names.add("Lancaster_SoftCremesButterscotchCaramel");
-    names.add("Kemps_FatFreeSkimMilk");
-
-    //create food items
-    FoodItem fi1 = new FoodItem("p1", "pasta");
-    FoodItem fi2 = new FoodItem("p2", "pizza");
-    FoodItem fi3 = new FoodItem("p3", "pickles");
-    FoodItem fi4 = new FoodItem("p4", "pizza");
-    
-    
+    //names.add("Yoplait_GreekYogurtLemon");
+    //names.add("Lancaster_SoftCremesButterscotchCaramel");
+    //names.add("Kemps_FatFreeSkimMilk");
+    foodItemList.add(new FoodItem("p1", "pasta"));
+    foodItemList.add(new FoodItem("p2", "pizza"));
+    foodItemList.add(new FoodItem("p3", "pickles"));
+    foodItemList.add(new FoodItem("p4", "pizza"));
+   
     
     launch(args);
   }
