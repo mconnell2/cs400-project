@@ -38,6 +38,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
         indexes      = new HashMap<String, BPTree<Double,FoodItem>>();
     }
     
+    @Override
+    public String toString() {
+    	return foodItemList.toString();
+    }
     
     public void saveFoodItems(String filename) {
     	//Set up print writer
@@ -105,19 +109,26 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	
     	Set<FoodItem> results = new HashSet<FoodItem>();
     	boolean isFirstRule = true;
+    	Rule rule = null;
         for (String ruleString : rules) {
-        	Rule rule = new Rule(ruleString);
-        	//TODO: handle exceptions
-        	
-        	//Get all food items matching this rule
-        	HashSet<FoodItem> filterResults = new HashSet<FoodItem>(indexes.get(rule.ruleNutrient).rangeSearch(rule.ruleValue, rule.getcomparator()));
-
-        	if (isFirstRule) {						//First time through - initialize the result set to the first filtered result set
-        		results.addAll(filterResults);
-        		isFirstRule = false;
+        	try {
+        		rule = new Rule(ruleString);
         	}
-        	else {									//Take the intersection of the running results and the current filtered set
-        		results.retainAll(filterResults);
+        	catch (IllegalArgumentException e) {
+        		//Skip this rule
+        	}
+        	
+        	if (rule != null) {
+        		//Get all food items matching this rule
+        		HashSet<FoodItem> filterResults = new HashSet<FoodItem>(indexes.get(rule.ruleNutrient).rangeSearch(rule.ruleValue, rule.getcomparator()));
+
+        		if (isFirstRule) {						//First time through - initialize the result set to the first filtered result set
+        			results.addAll(filterResults);
+        			isFirstRule = false;
+        		}
+        		else {									//Take the intersection of the running results and the current filtered set
+        			results.retainAll(filterResults);
+        		}
         	}
         }
         
@@ -137,7 +148,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	
     		//Index by each nutrient
     		for ( Map.Entry<String, Double> pair : foodItem.getNutrients().entrySet()) {
-    			this.indexes.get(pair.getKey()).insert(pair.getValue(), foodItem);
+    			BPTree<Double,FoodItem> index = this.indexes.get(pair.getKey());
+    			
+    			//Initialize index if not yet created
+    			if (index == null) {
+    				index = new BPTree<Double,FoodItem>(3);
+    				this.indexes.put(pair.getKey(), index);    				
+    			}
+    			
+    			//Update the index
+    			index.insert(pair.getValue(), foodItem);
     		}
     	}
     }
@@ -196,6 +216,30 @@ public class FoodData implements FoodDataADT<FoodItem> {
     			System.out.println("Failed to write line: " + e.getMessage());
     		}
     	}
+    }
+    
+    //Testing main method
+    public static void main(String[] args) {
+    	FoodData data = new FoodData();
+    	
+    	//Print empty data
+    	System.out.println("Empty data: " + data.toString());
+    	
+    	//Create new food item
+    	FoodItem food = new FoodItem("12345", "Smashed_giblets");
+    	food.addNutrient("calories", 120);
+    	food.addNutrient("fat", 23);
+    	food.addNutrient("carbohydrates", 0);
+    	food.addNutrient("fiber", 0.0);
+    	food.addNutrient("protein", 12);
+    	data.addFoodItem(food);
+    	System.out.println("Added one food " + data.toString());
+    	
+    	
+    	//Load lotsa food
+    	data.loadFoodItems("foodItems.txt");
+    	System.out.println("Added many foods " + data.toString());
+    	
     }
     
 }

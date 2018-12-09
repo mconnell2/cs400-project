@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a food item with all its properties.
@@ -66,6 +67,17 @@ public class FoodItem {
       if (nutrients.containsKey(name) != true) return 0;
       return nutrients.get(name);      
     }
+    
+    /**
+     * Overriden to-string method
+     */
+    @Override
+    public String toString() {
+    	String value = String.join(";",	this.id, this.name);
+    	value += " " + this.nutrients.toString();
+    	return "[ " + value + " ]";
+    }
+    
     
     //TODO remove this later, useful for testing/PQA for now
     public static void main (String[] args) {
