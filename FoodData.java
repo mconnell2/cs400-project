@@ -119,10 +119,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
     public void addFoodItem(FoodItem foodItem) {
     	this.foodItemList.add(foodItem);
     	
-    	//Index by each nutrient
+    	/*JLB - this code seems to be causing errors, are we not handling null appropriatly?
+	    //Index by each nutrient
     	for ( Map.Entry<String, Double> pair : foodItem.getNutrients().entrySet()) {
     		this.indexes.get(pair.getKey()).insert(pair.getValue(), foodItem);
     	}
+	*/
     }
 
     /**
