@@ -95,7 +95,9 @@ public class Main extends Application {
     
     ListView<FoodItem> mealList = new ListView<FoodItem>();
     ListView<FoodItem> foodList = new ListView<FoodItem>();
+
     
+
 
     // create horizontal box to add our 3 grid elements
     HBox hbox = new HBox(10);
