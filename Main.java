@@ -25,8 +25,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -374,7 +376,15 @@ public class Main extends Application {
 
     Text protein = new Text("Protein: 0 g");
     protein.setFont(Font.font(font, 16));
-
+    
+    ObservableList<PieChart.Data> pieChartData =
+        FXCollections.observableArrayList(
+        new PieChart.Data("Fat", 0),
+        new PieChart.Data("Carbohydrate", 0),
+        new PieChart.Data("Fiber", 0),
+        new PieChart.Data("Protein", 0));
+    PieChart pieChart = new PieChart(pieChartData);
+    
     // Add info to Meal Grid
     mealGrid.add(mealTitle, 1, 1, 1, 1);
     mealGrid.add(mealList, 1, 2, 2, 1);
@@ -443,7 +453,7 @@ public class Main extends Application {
     clearMealButton.setOnAction(actionEvent -> {
         meal.clearMeal();
         mealList.refresh();
-        updateNutrition(mealGrid, calories, fat, carbs, fiber, protein);
+        updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
     });
     
     // Add To Meal Button Action
@@ -451,14 +461,14 @@ public class Main extends Application {
       FoodItem foodItem = foodList.getSelectionModel().getSelectedItem();
       meal.addFoodItem(foodItem);
       mealList.refresh();
-      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein);
+      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
     });
 
     // Remove From Meal Button Action - needs to be after nutrition text created
     removeButton.setOnAction(actionEvent -> {
       meal.removeFoodItem(foodList.getSelectionModel().getSelectedIndex());
       mealList.refresh();
-      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein);
+      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
     });
 
     // help button
@@ -504,13 +514,13 @@ public class Main extends Application {
    * @param protein text in the grid
    */
   private void updateNutrition(GridPane mealGrid, Text calories, Text fat, Text carbs, Text fiber,
-      Text protein) {
+      Text protein, PieChart pieChart) {
     double caloriesInMeal = 0;
     double fatInMeal = 0;
     double carbsInMeal = 0;
     double fiberInMeal = 0;
     double proteinInMeal = 0;
-
+    
     if (meal.analyzeMeal().get("calories") != null) {
       caloriesInMeal = meal.analyzeMeal().get("calories");
     }
@@ -533,12 +543,25 @@ public class Main extends Application {
     fiber.setText("Fiber: " + fiberInMeal + " g");
     protein.setText("Protein: " + proteinInMeal + " g");
 
-    mealGrid.getChildren().removeAll(calories, fat, carbs, fiber, protein);
+    mealGrid.getChildren().removeAll(calories, fat, carbs, fiber, protein, pieChart);
     mealGrid.add(calories, 1, 4, 1, 1);
     mealGrid.add(fat, 1, 5, 1, 1);
     mealGrid.add(carbs, 1, 6, 1, 1);
     mealGrid.add(fiber, 1, 7, 1, 1);
     mealGrid.add(protein, 1, 8, 1, 1);
+    
+    if (fatInMeal == 0 & carbsInMeal == 0 & fiberInMeal == 0 & proteinInMeal == 0) {
+      return;  //do not draw pie graph
+    }
+    
+    ObservableList<PieChart.Data> pieChartData =
+        FXCollections.observableArrayList(
+        new PieChart.Data("Fat", fatInMeal),
+        new PieChart.Data("Carbohydrate", carbsInMeal),
+        new PieChart.Data("Fiber", fiberInMeal),
+        new PieChart.Data("Protein", proteinInMeal));
+    pieChart.setData(pieChartData);
+    mealGrid.add(pieChart, 2, 4, 1, 5);
   }
 
 
