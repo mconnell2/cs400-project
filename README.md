@@ -1,14 +1,14 @@
 # cs400-project
 
-Outstanding Issues
-Add application to top of all classes (Michelle to fix)
-Save button not working
-Removing from meal sometimes doesn't work
-Pie graph needs to be added (Julie - low priority)
-Finish up all headers/comments (David once coding is complete)
+Outstanding Issues<br>
+Add application to top of all classes (Michelle to fix)<br>
+Save button not working (Julie/David) <br>
+Removing from meal sometimes doesn't work(Mark/Julie)<br>
+Pie graph needs to be added (Julie - low priority)<Br>
+Finish up all headers/comments (David once coding is complete)<br>
 
 
-Completed issues 
-Carbs not calculating (Julie)
-Update nutrition info when clearning meal (Julie to fix)
-Handle null better when displaying nutrition info
+Completed issues <br>
+Carbs not calculating (Julie)<br>
+Update nutrition info when clearning meal (Julie to fix)<br>
+Handle null better when displaying nutrition info<br>
