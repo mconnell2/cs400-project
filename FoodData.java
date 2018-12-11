@@ -215,7 +215,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     		line = String.join(",", food.getID(), food.getName());
     		
     		for (Map.Entry<String, Double> pair : food.getNutrients().entrySet()) {
-    			line = String.join(",", line, pair.getKey(), pair.getValue().toString());
+    			line = String.join(",", line, pair.getKey().toLowerCase(), pair.getValue().toString());
     		}
     	}
     	return line;
