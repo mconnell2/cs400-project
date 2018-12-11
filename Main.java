@@ -466,7 +466,7 @@ public class Main extends Application {
 
     // Remove From Meal Button Action - needs to be after nutrition text created
     removeButton.setOnAction(actionEvent -> {
-      meal.removeFoodItem(foodList.getSelectionModel().getSelectedIndex());
+      meal.removeFoodItem(mealList.getSelectionModel().getSelectedIndex());
       mealList.refresh();
       updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
     });
