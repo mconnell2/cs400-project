@@ -1,6 +1,7 @@
 # cs400-project
 
 Outstanding Issues<br>
+Name filter in FoodData should base case-insensitive (David)
 Add food Item working (Michelle to fix)<br>
 Filter needs to filter and indicate list is filtered(Mark)<br>
 Save button not working (Julie/David) <br>
