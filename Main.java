@@ -585,7 +585,7 @@ public class Main extends Application {
        
        File foodItemsFile = fileChooser.showOpenDialog(primaryStage);
        if (foodItemsFile != null) {
-         foodData.loadFoodItems(foodItemsFile.getName());
+         foodData.loadFoodItems(foodItemsFile.getAbsolutePath());
          foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
          foodCount.setText("Food Count = " + foodItemList.size());
          foodList.setItems(foodItemList);
@@ -601,7 +601,7 @@ public class Main extends Application {
         fileChooser.setTitle("Save Food List");
         
         File saveFile = fileChooser.showSaveDialog(primaryStage);
-        foodData.saveFoodItems(saveFile.getName());
+        foodData.saveFoodItems(saveFile.getAbsolutePath());
     });
     
     // Add Food Button Action

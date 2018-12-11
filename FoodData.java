@@ -192,10 +192,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
     private static FoodItem parseLine(String line) {
     	FoodItem food = null;
     	String[] parts = line.split(",");
-    	if (parts.length > 1) {
+    	if (parts.length > 1 && parts[0].length() > 0 && parts[1].length() > 0	) {
     		food = new FoodItem(parts[0], parts[1]);
     		for (int i=2; i<parts.length; i+=2) {
-    			food.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+    			if (parts[i].length() > 0 && parts[i+1].length() > 0) {
+    				food.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+    			}
     		}
     	}
     	return food;
