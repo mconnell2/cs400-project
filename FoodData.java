@@ -95,7 +95,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public List<FoodItem> filterByName(String substring) {
     	return foodItemList.stream()
-    		.filter(item -> item.getName().contains(substring))
+                .filter(item -> item.getName().toUpperCase().contains(substring.toUpperCase()))
     		.collect(Collectors.toList());
     }
 
