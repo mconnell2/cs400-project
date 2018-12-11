@@ -1,3 +1,5 @@
+package application;
+
 //TODO add project header here
 public enum Nutrient {
     calories, carbohydrate, fat, fiber, protein;  //TODO is it OK to be lower case?
