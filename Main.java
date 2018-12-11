@@ -56,7 +56,7 @@ import javafx.util.Callback;
  * Main class that will create a Food List UI where a user can add/remove food items from a meal
  * They can also load and save from a file and filter the food list
  */
-public class Main2 extends Application {
+public class Main extends Application {
 
 
   String nameFilter = "";
