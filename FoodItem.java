@@ -26,6 +26,21 @@ public class FoodItem {
       nutrients = new HashMap<String, Double>();
     }
     
+    public FoodItem(String name, Double calories, Double fat, Double fiber, Double protein, Double carbs) {
+    	this.id = randId();
+        this.name = name;
+        nutrients = new HashMap<String, Double>();
+        nutrients.put("Calories", calories);
+        nutrients.put("Fat", fat);
+        nutrients.put("Fiber", fiber);
+        nutrients.put("Protein", protein);
+        nutrients.put("Carbohydrates", carbs);
+    }
+    
+    private String randId() {
+    	return "0";
+    }
+    
     /**
      * Gets the name of the food item
      * 
