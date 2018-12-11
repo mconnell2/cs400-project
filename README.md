@@ -1,7 +1,6 @@
 # cs400-project
 
 Outstanding Issues<br>
-Name filter in FoodData should base case-insensitive (David)<br>
 Add food Item working (Michelle to fix)<br>
 -needs to refresh food list<br>
 -if I add food item manually, then load list, should list contain both? I think that's OK.<br>
