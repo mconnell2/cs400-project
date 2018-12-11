@@ -12,6 +12,7 @@ Finish up all headers/comments (David once coding is complete)<br>
 
 
 Completed issues <br>
+Load/Save now work with files in arbitrary locations<br>
 Filter button highlighted when filters selected (Mark)<br>
 Filtering actually works now (Mark)<br>
 Removing from meal sometimes doesn't work(Mark/Julie)<br>
