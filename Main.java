@@ -29,7 +29,10 @@ import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -300,7 +303,102 @@ public class Main extends Application {
 
     // add new food item
     Button addFoodButton = createButton("Add New Food", buttonDefaultWidth);
+    addFoodButton.setOnAction(new EventHandler<ActionEvent>() {
 
+        @Override
+        public void handle(ActionEvent event) {
+      	// TODO Auto-generated method stub
+          System.out.println("Add New Food Button pressed");
+            
+          ///////////////////////
+          //ADD NEW FOOD WINDOW//
+          ///////////////////////
+      	  
+          //Make the VBox
+          VBox addNewFoodVBox = new VBox(5);
+          addNewFoodVBox.setPadding(new Insets(10));
+          addNewFoodVBox.setBackground(null);
+          
+          //set the Scene and stage
+          Scene scene = new Scene(addNewFoodVBox, 450, 300, Color.LIGHTSTEELBLUE);
+          Stage newFoodStage = new Stage();
+          newFoodStage.setTitle("Add New Food Item");
+          newFoodStage.setScene(scene);
+          
+          //set title text
+          Text newFoodTitle = new Text("Add New Food Item");
+          newFoodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+          addNewFoodVBox.getChildren().add(newFoodTitle);
+          
+          //ADD ALL FIELDS
+          //name field
+          TextField nameField = addFoodItemField(addNewFoodVBox,"Name:","e.g. cupcake");
+          TextField calField = addFoodItemField(addNewFoodVBox,"Calories:","e.g. 1000");
+          TextField fatField = addFoodItemField(addNewFoodVBox,"Fat:","e.g. 17");
+          TextField fiberField = addFoodItemField(addNewFoodVBox,"Fiber:","e.g. 0");
+          TextField proteinField = addFoodItemField(addNewFoodVBox,"Protein:","e.g. 5");
+          TextField carbField = addFoodItemField(addNewFoodVBox,"Carbohydrates:","e.g. 124");
+          /// END FIELD CREATION
+          
+          //DRAW THE POPUP
+          Region Vspacer = new Region();
+          VBox.setVgrow(Vspacer, Priority.ALWAYS);
+          
+          HBox addFoodButtonsBox = new HBox(10);
+          Region Hspacer = new Region();
+          HBox.setHgrow(Hspacer, Priority.ALWAYS);
+          
+          Button addFoodButton = createButton("_Add",buttonDefaultWidth);
+          addFoodButton.setPrefWidth(150);
+          Button cancelAddButton = createButton("_Cancel",buttonDefaultWidth);
+          
+          cancelAddButton.setPrefWidth(150);
+          addFoodButtonsBox.getChildren().addAll(Hspacer,addFoodButton,cancelAddButton);
+          addNewFoodVBox.getChildren().addAll(Vspacer,addFoodButtonsBox);
+          
+          //HANDLE EVENTS
+          cancelAddButton.setOnAction(e -> newFoodStage.close());
+          addFoodButton.setOnAction(e -> {
+          	try {
+          	//TODO better validation here would be nice, like a proper validation function
+          		FoodItem newFood = new FoodItem(nameField.getText(),
+          			Double.parseDouble(calField.getText()),
+          			Double.parseDouble(fatField.getText()),
+          			Double.parseDouble(fiberField.getText()),
+          			Double.parseDouble(proteinField.getText()),
+          			Double.parseDouble(carbField.getText()));
+          			foodData.addFoodItem(newFood);
+          			//TODO also need to refresh the foodlist grid here
+          			foodList.refresh();
+          			// TODO this didn't work 
+          			newFoodStage.close();
+          	}catch(Exception ex) {
+          		Alert buttonAlert3 = 
+          				new Alert(AlertType.WARNING, "Invalid entry");
+          								buttonAlert3.showAndWait()
+          				.filter(response -> response == ButtonType.OK);
+          	}
+          });
+          
+          newFoodStage.show();
+          
+          cancelAddButton.requestFocus();
+          // Call the pop up
+          
+        }
+
+  	public TextField addFoodItemField(VBox addNewFoodVBox, String labelText, String ghostText) {
+  		HBox NameHBox = new HBox(10);
+          Region spacer = new Region();
+          HBox.setHgrow(spacer, Priority.ALWAYS);
+          Label newFoodName = new Label(labelText);
+          TextField newFoodNameField = new TextField(); 
+          newFoodNameField.setPromptText(ghostText);
+          NameHBox.getChildren().addAll(newFoodName,spacer,newFoodNameField);
+          addNewFoodVBox.getChildren().add(NameHBox);
+          return newFoodNameField;
+  	}
+      });
     // clear Meal
     Button clearMealButton = createButton("Clear Meal", buttonDefaultWidth);
 
@@ -444,10 +542,10 @@ public class Main extends Application {
     });
     
     // Add Food Button Action
-    addFoodButton.setOnAction(actionEvent -> {
+    //addFoodButton.setOnAction(actionEvent -> {
         // TODO Finish Add Food Button
-        System.out.println("Add New Food Button pressed");
-    });
+      //  System.out.println("Add New Food Button pressed");
+    //});
     
     // Clear Meal Button Action
     clearMealButton.setOnAction(actionEvent -> {
@@ -466,7 +564,7 @@ public class Main extends Application {
 
     // Remove From Meal Button Action - needs to be after nutrition text created
     removeButton.setOnAction(actionEvent -> {
-      meal.removeFoodItem(foodList.getSelectionModel().getSelectedIndex());
+      meal.removeFoodItem(mealList.getSelectionModel().getSelectedIndex());
       mealList.refresh();
       updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
     });

@@ -150,6 +150,15 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	
     		//Index by each nutrient
     		for ( Map.Entry<String, Double> pair : foodItem.getNutrients().entrySet()) {
+
+    			if (indexes.containsKey(pair.getKey())) {
+    				indexes.get(pair.getKey()).insert(pair.getValue(), foodItem);
+    			}
+    			else {
+    				indexes.put(pair.getKey(), new BPTree<Double, FoodItem>(10));
+    				indexes.get(pair.getKey()).insert(pair.getValue(), foodItem);
+    			}
+
     			BPTree<Double,FoodItem> index = this.indexes.get(pair.getKey());
     			
     			//Initialize index if not yet created
@@ -160,6 +169,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     			
     			//Update the index
     			index.insert(pair.getValue(), foodItem);
+
     		}
     	}
     }
