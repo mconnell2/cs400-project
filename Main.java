@@ -428,8 +428,8 @@ public class Main extends Application {
                     Double.parseDouble(calField.getText()),
                     Double.parseDouble(fatField.getText()),
                     Double.parseDouble(carbField.getText()),
-                    Double.parseDouble(proteinField.getText()),
-                    Double.parseDouble(fiberField.getText()));
+                    Double.parseDouble(fiberField.getText()),
+                    Double.parseDouble(proteinField.getText()));
                     foodData.addFoodItem(newFood);
                     //refresh the foodlist  
                     foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
