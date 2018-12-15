@@ -18,11 +18,7 @@ import java.util.stream.Collectors;
 /**
  * This class represents the backend for managing all 
  * the operations associated with FoodItems
- * JLB edited, and again
- *MHC was here too.
- *MAL test
  * 
- * @author sapan (sapan@cs.wisc.edu)
  */
 public class FoodData implements FoodDataADT<FoodItem> {
     
@@ -45,6 +41,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	return foodItemList.toString();
     }
     
+    /**
+     * Saves current food items to a file in .csv format.
+     * @param filename - name of the file to save the food items to
+     */
     public void saveFoodItems(String filename) {
     	//Set up print writer
     	FileWriter fwOutput = null;
@@ -88,9 +88,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		}
     }
     
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByName(java.lang.String)
+    /**
+     * Returns a subset of food items whose name contains a specified substring.
+     * @param substring - string filter for item names
+     * @return list of filtered food items
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
@@ -221,6 +222,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	return line;
     }
     
+    /**
+     * Writes a line of fooditem data to a provided file writer
+     * 
+     * @param writer - file writer object to write to
+     * @param line - string to write
+     */
     private static void writeDataLine(FileWriter writer, String line) {
     	if (writer != null && line.length() > 0) {
     		try {
@@ -250,7 +257,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	System.out.println("Added one food " + data.toString());
     	
     	
-    	//Load lotsa food
+    	//Load more food
     	data.loadFoodItems("foodItems.txt");
     	System.out.println("Added many foods " + data.toString());
     	
