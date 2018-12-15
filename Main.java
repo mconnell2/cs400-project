@@ -394,13 +394,13 @@ public class Main extends Application {
           addNewFoodVBox.getChildren().add(newFoodTitle);
           
           //ADD ALL FIELDS
-          //name field
           TextField nameField = addFoodItemField(addNewFoodVBox,"Name:","e.g. cupcake");
           TextField calField = addFoodItemField(addNewFoodVBox,"Calories:","e.g. 1000");
           TextField fatField = addFoodItemField(addNewFoodVBox,"Fat:","e.g. 17");
+          TextField carbField = addFoodItemField(addNewFoodVBox,"Carbohydrates:","e.g. 124");
           TextField fiberField = addFoodItemField(addNewFoodVBox,"Fiber:","e.g. 0");
           TextField proteinField = addFoodItemField(addNewFoodVBox,"Protein:","e.g. 5");
-          TextField carbField = addFoodItemField(addNewFoodVBox,"Carbohydrates:","e.g. 124");
+          
           /// END FIELD CREATION
           
           //DRAW THE POPUP
@@ -427,9 +427,9 @@ public class Main extends Application {
                 FoodItem newFood = new FoodItem(nameField.getText(),
                     Double.parseDouble(calField.getText()),
                     Double.parseDouble(fatField.getText()),
-                    Double.parseDouble(fiberField.getText()),
+                    Double.parseDouble(carbField.getText()),
                     Double.parseDouble(proteinField.getText()),
-                    Double.parseDouble(carbField.getText()));
+                    Double.parseDouble(fiberField.getText()));
                     foodData.addFoodItem(newFood);
                     //refresh the foodlist  
                     foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
