@@ -431,9 +431,11 @@ public class Main extends Application {
                     Double.parseDouble(proteinField.getText()),
                     Double.parseDouble(carbField.getText()));
                     foodData.addFoodItem(newFood);
-                    //TODO also need to refresh the foodlist grid here
+                    //refresh the foodlist grid 
+                    foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+                    foodList.setItems(foodItemList);
                     foodList.refresh();
-                    // TODO this didn't work 
+                     
                     newFoodStage.close();
             }catch(Exception ex) {
                 Alert buttonAlert3 = 
