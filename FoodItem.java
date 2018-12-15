@@ -16,7 +16,7 @@ public class FoodItem {
     private HashMap<String, Double> nutrients; //map of nutrients and value for food item
     
     /**
-     * Constructor
+     * Constructor for name and ID
      * @param name name of the food item
      * @param id unique id of the food item 
      */
@@ -26,6 +26,15 @@ public class FoodItem {
       nutrients = new HashMap<String, Double>();
     }
     
+     /**
+     * Constructor for name and nutrients; food item will be assigned ID
+     * @param name name of the food item
+     * @param calories in food item
+     * @param fat grams in food item
+     * @param carbs grams in food item
+     * @param fiber grams in food item
+     * @param protein grams in food item
+     */
     public FoodItem(String name, Double calories, Double fat, Double carbs, Double fiber, Double protein) {
     	this.id = randId();
         this.name = name;
@@ -37,6 +46,7 @@ public class FoodItem {
         nutrients.put("protein", protein);
     }
     
+    //TODO *MHC this doesn't look right
     private String randId() {
     	return "0";
     }
@@ -86,7 +96,7 @@ public class FoodItem {
     }
     
     /**
-     * Overriden to-string method
+     * Overriden to-string method for writing food item and related nutrients to file
      */
     @Override
     public String toString() {
@@ -94,7 +104,6 @@ public class FoodItem {
     	value += " " + this.nutrients.toString();
     	return "[ " + value + " ]";
     }
-    
     
     //TODO remove this later, useful for testing/PQA for now
     public static void main (String[] args) {
