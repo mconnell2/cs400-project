@@ -26,15 +26,15 @@ public class FoodItem {
       nutrients = new HashMap<String, Double>();
     }
     
-    public FoodItem(String name, Double calories, Double fat, Double fiber, Double protein, Double carbs) {
+    public FoodItem(String name, Double calories, Double fat, Double carbs, Double fiber, Double protein) {
     	this.id = randId();
         this.name = name;
         nutrients = new HashMap<String, Double>();
         nutrients.put("calories", calories);
         nutrients.put("fat", fat);
+        nutrients.put("carbohydrates", carbs);
         nutrients.put("fiber", fiber);
         nutrients.put("protein", protein);
-        nutrients.put("carbohydrates", carbs);
     }
     
     private String randId() {
