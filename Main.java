@@ -29,7 +29,10 @@ import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -56,10 +59,9 @@ import javafx.util.Callback;
 public class Main extends Application {
 
 
-  String nameFilter = null;
+  String nameFilter = "";
   Meal meal = new Meal();
   ObservableList<FoodItem> foodItemList;
-
 
 
   /*
@@ -140,7 +142,7 @@ public class Main extends Application {
         TextField nameFilterTextField = new TextField(nameFilter);
         nameFilterTextField.setPromptText("Enter text for name filter (ex. beans)");
         TextField nutrientFilterTextField = new TextField();
-        nutrientFilterTextField.setPromptText("Enter rule (ex. fat > 100.0)");
+        nutrientFilterTextField.setPromptText("Enter rule (ex. fat >= 15");
 
         // ListView object for displaying rules
         ListView<String> ruleListView = new ListView<>();
@@ -192,14 +194,48 @@ public class Main extends Application {
 
         // prepare and show stage
         // Group filterRoot = new Group(filterVBox);
-        Scene scene = new Scene(filterVBox, 450, 450, Color.LIGHTCORAL);
+        Scene scene = new Scene(filterVBox, 450, 450, Color.AZURE);
         Stage ruleStage = new Stage();
         ruleStage.setTitle("Enter/Edit Filter(s)");
         ruleStage.setScene(scene);
 
-        // handle closing window via Windows X - will save current name filter
+        // handle closing window via Windows X - will save current name filter, update button color
+        
         ruleStage.setOnCloseRequest(windowEvent -> {
           nameFilter = nameFilterTextField.getText();
+          
+          //TODO this code is duplicative with save button below, should I make a helper method?
+          //TODO if so, can we move foodData to a class level variable?
+          //if no filters applied
+          if (nameFilter.equals("") && filterRules.isEmpty()) {
+            filterButton.setStyle(null);
+            foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+            foodList.setItems(foodItemList);
+            foodList.refresh();
+          }
+          
+          //name filter, no rule filter
+          else if (!nameFilter.equals("") && filterRules.isEmpty()) {
+            filterButton.setStyle("-fx-base: #00b8e6;");
+            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
+          }
+          
+          //rule filter, no name filter
+          else if (nameFilter.equals("") && !filterRules.isEmpty()) { 
+            filterButton.setStyle("-fx-base: #00b8e6;");
+            foodItemList = FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
+          }
+
+          //both name and nutrient filters
+          else {
+            filterButton.setStyle("-fx-base: #00b8e6;");
+            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
+            foodItemList.retainAll(foodData.filterByNutrients(filterRules));
+          }
+            
+          foodList.setItems(foodItemList);
+          foodList.refresh();
+          
         });
         ruleStage.show();
 
@@ -235,8 +271,38 @@ public class Main extends Application {
         });
 
         // accept button will save name filter and close window
-        acceptButton.setOnAction(actionEvent -> {
+          acceptButton.setOnAction(actionEvent -> {
           nameFilter = nameFilterTextField.getText();
+          
+          //if no filters applied
+          if (nameFilter.equals("") && filterRules.isEmpty()) {
+            filterButton.setStyle(null);
+            foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+            foodList.setItems(foodItemList);
+            foodList.refresh();
+          }
+          
+          //name filter, no rule filter
+          else if (!nameFilter.equals("") && filterRules.isEmpty()) {
+            filterButton.setStyle("-fx-base: #00b8e6;");
+            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
+          }
+          
+          //rule filter, no name filter
+          else if (nameFilter.equals("") && !filterRules.isEmpty()) { 
+            filterButton.setStyle("-fx-base: #00b8e6;");
+            foodItemList = FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
+          }
+
+          //both name and nutrient filters
+          else {
+            filterButton.setStyle("-fx-base: #00b8e6;");
+            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
+            foodItemList.retainAll(foodData.filterByNutrients(filterRules));
+          }
+            
+          foodList.setItems(foodItemList);
+          foodList.refresh();
           ruleStage.close();
         });
 
@@ -300,7 +366,102 @@ public class Main extends Application {
 
     // add new food item
     Button addFoodButton = createButton("Add New Food", buttonDefaultWidth);
+    addFoodButton.setOnAction(new EventHandler<ActionEvent>() {
 
+        @Override
+        public void handle(ActionEvent event) {
+        // TODO Auto-generated method stub
+          System.out.println("Add New Food Button pressed");
+            
+          ///////////////////////
+          //ADD NEW FOOD WINDOW//
+          ///////////////////////
+          
+          //Make the VBox
+          VBox addNewFoodVBox = new VBox(5);
+          addNewFoodVBox.setPadding(new Insets(10));
+          addNewFoodVBox.setBackground(null);
+          
+          //set the Scene and stage
+          Scene scene = new Scene(addNewFoodVBox, 450, 300, Color.LIGHTSTEELBLUE);
+          Stage newFoodStage = new Stage();
+          newFoodStage.setTitle("Add New Food Item");
+          newFoodStage.setScene(scene);
+          
+          //set title text
+          Text newFoodTitle = new Text("Add New Food Item");
+          newFoodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+          addNewFoodVBox.getChildren().add(newFoodTitle);
+          
+          //ADD ALL FIELDS
+          //name field
+          TextField nameField = addFoodItemField(addNewFoodVBox,"Name:","e.g. cupcake");
+          TextField calField = addFoodItemField(addNewFoodVBox,"Calories:","e.g. 1000");
+          TextField fatField = addFoodItemField(addNewFoodVBox,"Fat:","e.g. 17");
+          TextField fiberField = addFoodItemField(addNewFoodVBox,"Fiber:","e.g. 0");
+          TextField proteinField = addFoodItemField(addNewFoodVBox,"Protein:","e.g. 5");
+          TextField carbField = addFoodItemField(addNewFoodVBox,"Carbohydrates:","e.g. 124");
+          /// END FIELD CREATION
+          
+          //DRAW THE POPUP
+          Region Vspacer = new Region();
+          VBox.setVgrow(Vspacer, Priority.ALWAYS);
+          
+          HBox addFoodButtonsBox = new HBox(10);
+          Region Hspacer = new Region();
+          HBox.setHgrow(Hspacer, Priority.ALWAYS);
+          
+          Button addFoodButton = createButton("_Add",buttonDefaultWidth);
+          addFoodButton.setPrefWidth(150);
+          Button cancelAddButton = createButton("_Cancel",buttonDefaultWidth);
+          
+          cancelAddButton.setPrefWidth(150);
+          addFoodButtonsBox.getChildren().addAll(Hspacer,addFoodButton,cancelAddButton);
+          addNewFoodVBox.getChildren().addAll(Vspacer,addFoodButtonsBox);
+          
+          //HANDLE EVENTS
+          cancelAddButton.setOnAction(e -> newFoodStage.close());
+          addFoodButton.setOnAction(e -> {
+            try {
+            //TODO better validation here would be nice, like a proper validation function
+                FoodItem newFood = new FoodItem(nameField.getText(),
+                    Double.parseDouble(calField.getText()),
+                    Double.parseDouble(fatField.getText()),
+                    Double.parseDouble(fiberField.getText()),
+                    Double.parseDouble(proteinField.getText()),
+                    Double.parseDouble(carbField.getText()));
+                    foodData.addFoodItem(newFood);
+                    //TODO also need to refresh the foodlist grid here
+                    foodList.refresh();
+                    // TODO this didn't work 
+                    newFoodStage.close();
+            }catch(Exception ex) {
+                Alert buttonAlert3 = 
+                        new Alert(AlertType.WARNING, "Invalid entry");
+                                        buttonAlert3.showAndWait()
+                        .filter(response -> response == ButtonType.OK);
+            }
+          });
+          
+          newFoodStage.show();
+          
+          cancelAddButton.requestFocus();
+          // Call the pop up
+          
+        }
+
+    public TextField addFoodItemField(VBox addNewFoodVBox, String labelText, String ghostText) {
+        HBox NameHBox = new HBox(10);
+          Region spacer = new Region();
+          HBox.setHgrow(spacer, Priority.ALWAYS);
+          Label newFoodName = new Label(labelText);
+          TextField newFoodNameField = new TextField(); 
+          newFoodNameField.setPromptText(ghostText);
+          NameHBox.getChildren().addAll(newFoodName,spacer,newFoodNameField);
+          addNewFoodVBox.getChildren().add(NameHBox);
+          return newFoodNameField;
+    }
+      });
     // clear Meal
     Button clearMealButton = createButton("Clear Meal", buttonDefaultWidth);
 
@@ -424,7 +585,7 @@ public class Main extends Application {
        
        File foodItemsFile = fileChooser.showOpenDialog(primaryStage);
        if (foodItemsFile != null) {
-         foodData.loadFoodItems(foodItemsFile.getName());
+         foodData.loadFoodItems(foodItemsFile.getAbsolutePath());
          foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
          foodCount.setText("Food Count = " + foodItemList.size());
          foodList.setItems(foodItemList);
@@ -440,14 +601,14 @@ public class Main extends Application {
         fileChooser.setTitle("Save Food List");
         
         File saveFile = fileChooser.showSaveDialog(primaryStage);
-        foodData.saveFoodItems(saveFile.getName());
+        foodData.saveFoodItems(saveFile.getAbsolutePath());
     });
     
     // Add Food Button Action
-    addFoodButton.setOnAction(actionEvent -> {
+    //addFoodButton.setOnAction(actionEvent -> {
         // TODO Finish Add Food Button
-        System.out.println("Add New Food Button pressed");
-    });
+      //  System.out.println("Add New Food Button pressed");
+    //});
     
     // Clear Meal Button Action
     clearMealButton.setOnAction(actionEvent -> {

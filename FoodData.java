@@ -95,7 +95,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public List<FoodItem> filterByName(String substring) {
     	return foodItemList.stream()
-    		.filter(item -> item.getName().contains(substring))
+                .filter(item -> item.getName().toUpperCase().contains(substring.toUpperCase()))
     		.collect(Collectors.toList());
     }
 
@@ -192,10 +192,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
     private static FoodItem parseLine(String line) {
     	FoodItem food = null;
     	String[] parts = line.split(",");
-    	if (parts.length > 1) {
+    	if (parts.length > 1 && parts[0].length() > 0 && parts[1].length() > 0	) {
     		food = new FoodItem(parts[0], parts[1]);
     		for (int i=2; i<parts.length; i+=2) {
-    			food.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+    			if (parts[i].length() > 0 && parts[i+1].length() > 0) {
+    				food.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+    			}
     		}
     	}
     	return food;
@@ -213,7 +215,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     		line = String.join(",", food.getID(), food.getName());
     		
     		for (Map.Entry<String, Double> pair : food.getNutrients().entrySet()) {
-    			line = String.join(",", line, pair.getKey(), pair.getValue().toString());
+    			line = String.join(",", line, pair.getKey().toLowerCase(), pair.getValue().toString());
     		}
     	}
     	return line;

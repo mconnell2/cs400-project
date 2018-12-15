@@ -30,11 +30,11 @@ public class FoodItem {
     	this.id = randId();
         this.name = name;
         nutrients = new HashMap<String, Double>();
-        nutrients.put("Calories", calories);
-        nutrients.put("Fat", fat);
-        nutrients.put("Fiber", fiber);
-        nutrients.put("Protein", protein);
-        nutrients.put("Carbohydrates", carbs);
+        nutrients.put("calories", calories);
+        nutrients.put("fat", fat);
+        nutrients.put("fiber", fiber);
+        nutrients.put("protein", protein);
+        nutrients.put("carbohydrates", carbs);
     }
     
     private String randId() {
