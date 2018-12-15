@@ -32,7 +32,7 @@ public class FoodItem {
         nutrients = new HashMap<String, Double>();
         nutrients.put("calories", calories);
         nutrients.put("fat", fat);
-        nutrients.put("carbohydrates", carbs);
+        nutrients.put("carbohydrate", carbs);
         nutrients.put("fiber", fiber);
         nutrients.put("protein", protein);
     }
