@@ -115,26 +115,6 @@ public class Rule {
     return ruleValue;
   }
 
-  /*
-   * returns true of food item matches on the rule conditions TODO do actually need this here? is
-   * this all handled in the B Tree? I presume so.
-   */
-  public boolean evalFoodItem(FoodItem foodItem) {
-
-    // gather nutrient information
-    Double nutrientValue = foodItem.getNutrientValue(ruleNutrient);
-
-    // compare with comparator from rule and return true if foodItem satisfies the rule
-    if (comparator.equals("==") && (nutrientValue.compareTo(ruleValue) == 0))
-      return true;
-    else if (comparator.equals(">=") && (nutrientValue.compareTo(ruleValue) >= 0))
-      return true;
-    else if (comparator.equals("<=") && (nutrientValue.compareTo(ruleValue) <= 0))
-      return true;
-
-    // otherwise, return false
-    return false;
-  }
 
   @Override
   public String toString() {
@@ -164,11 +144,6 @@ public class Rule {
       // test toString
       System.out.println("\nTesting rule: " + fatRule);
 
-      // test evaluating against food items
-      System.out
-          .println("Test evalFoodItem for " + fi1.getName() + ": " + fatRule.evalFoodItem(fi1));
-      System.out
-          .println("Test evalFoodItem for " + fi2.getName() + ": " + fatRule.evalFoodItem(fi2));
     }
 
   }

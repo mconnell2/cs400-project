@@ -17,6 +17,7 @@
 package application;
 
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * This class represents a food item with all its properties.
@@ -61,11 +62,20 @@ public class FoodItem {
     nutrients.put("fiber", fiber);
     nutrients.put("protein", protein);
   }
-
-  // TODO *MHC this doesn't look right
-  private String randId() {
-    return "0";
-  }
+  
+  /**
+     * Create random 24 character String ID for manually added food item
+     * @return id for new item
+     */
+    private String randId() {
+    	String chars = "0123456789qwerytuiopasdfghjklzxcvbnmMNBVCXZASFDGHJKLPOIUYTREWQ";
+    	String id = "";
+    	Random c = new Random();
+    	while (id.length() < 25) {
+    		id=id+chars.charAt(c.nextInt(62));
+    	}
+    	return id;
+    }
 
   /**
    * Gets the name of the food item

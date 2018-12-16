@@ -55,7 +55,6 @@ public class Meal {
   public void removeFoodItem(int index) {
     if ((index >= 0) && index < foodItemList.size())
       foodItemList.remove(index);
-    // TODO - show we throw an exception instead? We could a do try/catch around .remove method
   }
 
   /*
@@ -96,13 +95,6 @@ public class Meal {
     }
 
     return mealNutrients;
-  }
-
-  // TODO - not sure we need this for anything? It's not in our spec.
-  // I also needed to add a toString method in foodItem.
-  @Override
-  public String toString() {
-    return foodItemList.toString();
   }
 
   // Testing class
