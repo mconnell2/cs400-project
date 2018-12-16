@@ -85,7 +85,7 @@ public class Rule {
         return "enter a valid nutrient amount";
 
       // parse double - will throw exception if not double
-      Double ruleValue = Double.parseDouble(doubleString);
+      Double.parseDouble(doubleString);
 
     } catch (Exception e) {
       return "enter a valid nutrient amount";
@@ -127,7 +127,7 @@ public class Rule {
     // create two food items
     FoodItem fi1 = new FoodItem("p1", "pasta");
     FoodItem fi2 = new FoodItem("p2", "pizza");
-    fi2.addNutrient("fat", 12.0);
+    fi1.addNutrient("fat", 12.0);
     fi2.addNutrient("carbs", 16.0);
 
     // parse rule; maybe use this code later

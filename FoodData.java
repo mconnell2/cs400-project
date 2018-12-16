@@ -18,7 +18,6 @@ package application;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -110,7 +109,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public List<FoodItem> filterByName(String substring) {
     	return foodItemList.stream()
-                .filter(item -> item.getName().toUpperCase().contains(substring.toUpperCase()))
+    		.filter(item -> item.getName().toUpperCase().contains(substring.toUpperCase()))
     		.collect(Collectors.toList());
     }
 
