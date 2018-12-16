@@ -1,6 +1,5 @@
 # cs400-project
 
-We ca keep notes here, too.
-Yes we can here are mine
+Issues moved to Github
 
-Edited in master branch. Normally we won't do this.
+We still need to update this later for final submission.
