@@ -619,9 +619,11 @@ public class Main extends Application {
     // Add To Meal Button Action
     addToMealButton.setOnAction(actionEvent -> {
       FoodItem foodItem = foodList.getSelectionModel().getSelectedItem();
-      meal.addFoodItem(foodItem);
-      mealList.refresh();
-      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
+      if (foodItem != null) {
+        meal.addFoodItem(foodItem);
+        mealList.refresh();
+        updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
+      }
     });
 
     // Remove From Meal Button Action - needs to be after nutrition text created
