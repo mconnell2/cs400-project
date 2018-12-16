@@ -1,6 +1,20 @@
-
-
-// TODO add project header header
+/**
+ * Filename: Meal.java 
+ * Project: Final Project - Food List 
+ * Authors: Epic lecture 4 
+ * Julie Book - jlsauer@wisc.edu 
+ * David Billmire - dbillmire@wisc.edu
+ * Mark Connell - mconnell2@wisc.edu
+ * Michelle Lindblom - mlindblom@wisc.edu
+ *
+ * Semester: Fall 2018 Course: CS400
+ * 
+ * Due Date: 12/2/18 11:59 pm Version: 1.0
+ * 
+ * Credits: none
+ * Bugs: no known bugs
+ */
+package application;
 
 /*
  * This class stores and validates nutrient filter rules.
@@ -21,15 +35,16 @@ public class Rule {
   }
 
   /*
-   * constructor parses a string; if string is invalid, will throw IllegalArgumentException
-   * use isValidRuleString to validate the object before instantiating a rule
+   * constructor parses a string; if string is invalid, will throw IllegalArgumentException use
+   * isValidRuleString to validate the object before instantiating a rule
    */
-  public Rule(String ruleData) throws IllegalArgumentException  {
+  public Rule(String ruleData) throws IllegalArgumentException {
 
-    //throw exception if string isn't properly for
-    if (isValidRuleString(ruleData) != null) throw new IllegalArgumentException();
-    
-    //parse and store string
+    // throw exception if string isn't properly for
+    if (isValidRuleString(ruleData) != null)
+      throw new IllegalArgumentException();
+
+    // parse and store string
     String[] ruleArray = ruleData.split(" ");
     this.ruleNutrient = ruleArray[0];
     this.comparator = ruleArray[1];
@@ -55,7 +70,7 @@ public class Rule {
     if (ruleNutrient == null || !Nutrient.contains(ruleNutrient)) {
       return "enter a valid nutrient";
     }
-    
+
     // validate comparator
     String comparator = ruleArray[1];
     if (!comparator.equals(">=") && !comparator.equals("==") && !comparator.equals("<="))
@@ -64,21 +79,21 @@ public class Rule {
     // validate value
     try {
       String doubleString = ruleArray[2];
-     
-      //disallow users or file entering a double like "14d"
-      if (doubleString.substring(doubleString.length()-1, doubleString.length()).matches("\\D"))
+
+      // disallow users or file entering a double like "14d"
+      if (doubleString.substring(doubleString.length() - 1, doubleString.length()).matches("\\D"))
         return "enter a valid nutrient amount";
 
-      //parse double - will throw exception if not double
+      // parse double - will throw exception if not double
       Double ruleValue = Double.parseDouble(doubleString);
-      
+
     } catch (Exception e) {
       return "enter a valid nutrient amount";
     }
 
     return null;
   }
-  
+
   /*
    * accessor for nutrient from rule
    */
@@ -101,8 +116,8 @@ public class Rule {
   }
 
   /*
-   * returns true of food item matches on the rule conditions
-   * TODO do actually need this here? is this all handled in the B Tree? I presume so.
+   * returns true of food item matches on the rule conditions TODO do actually need this here? is
+   * this all handled in the B Tree? I presume so.
    */
   public boolean evalFoodItem(FoodItem foodItem) {
 
@@ -126,7 +141,7 @@ public class Rule {
     return ruleNutrient + " " + comparator + " " + ruleValue;
   }
 
-  // TODO Main method to delete later
+  // Testing Class
   public static void main(String[] args) {
 
     // create two food items
