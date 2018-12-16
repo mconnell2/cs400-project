@@ -1,3 +1,19 @@
+/**
+ * Filename: BPTree.java 
+ * Project: Final Project - Food List 
+ * Authors: Epic lecture 4 
+ * Julie Book - jlsauer@wisc.edu 
+ * David Billmire - dbillmire@wisc.edu
+ * Mark Connell - mconnell2@wisc.edu
+ * Michelle Lindblom - mlindblom@wisc.edu
+ *
+ * Semester: Fall 2018 Course: CS400
+ * 
+ * Due Date: 12/2/18 11:59 pm Version: 1.0
+ * 
+ * Credits: none
+ * Bugs: no known bugs
+ */
 package application;
 
 import java.util.ArrayList;
