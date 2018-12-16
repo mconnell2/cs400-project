@@ -115,7 +115,7 @@ public class Main extends Application {
 
     // filter button
     Button filterButton = createButton("", 50);
-    Image filterImage = new Image(getClass().getResourceAsStream("/resources/filter.png"));
+    Image filterImage = new Image(getClass().getClassLoader().getResourceAsStream("resources/filter.png"));
     filterButton.setGraphic(new ImageView(filterImage));
 
     filterButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -478,12 +478,12 @@ public class Main extends Application {
 
     // add food to meal
     Button addToMealButton = createButton("", buttonDefaultWidth);
-    Image addImage = new Image(getClass().getResourceAsStream("/resources/ArrowRight.png"));
+    Image addImage = new Image(getClass().getClassLoader().getResourceAsStream("resources/ArrowRight.png"));
     addToMealButton.setGraphic(new ImageView(addImage));
 
     // remove food from meal
     Button removeButton = createButton("", buttonDefaultWidth);
-    Image removeImage = new Image(getClass().getResourceAsStream("/resources/ArrowLeft.png"));
+    Image removeImage = new Image(getClass().getClassLoader().getResourceAsStream("resources/ArrowLeft.png"));
     removeButton.setGraphic(new ImageView(removeImage));
 
     // Add elements to button Grid
@@ -636,10 +636,8 @@ public class Main extends Application {
 
       WebView helpWebView = new WebView();
       WebEngine helpWebEngine = helpWebView.getEngine();
-      //File helpFile = new File("resources/help.html");
       String helpFile = this.getClass().getClassLoader().getResource("resources/help.html").toString();
       
-      System.out.println("Trying to load: " + helpFile);
       helpWebEngine.load(helpFile);
       StackPane helpPane = new StackPane();
       helpPane.getChildren().add(helpWebView);
