@@ -26,7 +26,7 @@ public class Rule {
   Double ruleValue; // stores value for nutrient comparison
 
   /*
-   * constructor TODO don't know if we want to keep this
+   * constructor takes in valid strings for nutrients, comparators and values
    */
   public Rule(String ruleNutrient, String comparator, Double ruleValue) {
     this.ruleNutrient = ruleNutrient;
