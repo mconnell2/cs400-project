@@ -382,10 +382,23 @@ public class Main extends Application {
         cancelAddButton.setOnAction(e -> newFoodStage.close());
         addFoodButton.setOnAction(e -> {
           try {
-            FoodItem newFood = new FoodItem(nameField.getText(),
-                Double.parseDouble(calField.getText()), Double.parseDouble(fatField.getText()),
-                Double.parseDouble(carbField.getText()), Double.parseDouble(fiberField.getText()),
-                Double.parseDouble(proteinField.getText()));
+            Double calories = Double.parseDouble(calField.getText());
+            Double fat = Double.parseDouble(fatField.getText());
+            Double fiber = Double.parseDouble(fiberField.getText());
+            Double carbs = Double.parseDouble(carbField.getText());
+            Double protein = Double.parseDouble(proteinField.getText());
+            
+            if (calories < 0 || fat < 0 || carbs < 0 || fiber < 0 || protein < 0) {
+                throw new IllegalArgumentException("Nutrition cannot be a negative number");
+              }
+            
+            FoodItem newFood = new FoodItem(randId(), nameField.getText());
+            newFood.addNutrient("calories", calories);
+            newFood.addNutrient("fat", fat);
+            newFood.addNutrient("carbohydrate", carbs);
+            newFood.addNutrient("fiber", fiber);
+            newFood.addNutrient("protein", protein);
+            
             foodData.addFoodItem(newFood);
             foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
             foodItemList = foodItemList.sorted((a, b) -> a.getName().toUpperCase()
