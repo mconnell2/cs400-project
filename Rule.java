@@ -9,7 +9,7 @@
  *
  * Semester: Fall 2018 Course: CS400
  * 
- * Due Date: 12/2/18 11:59 pm Version: 1.0
+ * Due Date: 12/16/18 11:59 pm Version: 1.0
  * 
  * Credits: none
  * Bugs: no known bugs
@@ -21,12 +21,12 @@ package application;
  */
 public class Rule {
 
-  String ruleNutrient; // stores name of nutrient TODO - use enum?
+  String ruleNutrient; // stores name of nutrient
   String comparator; // stores comparator for nutrient comparison
   Double ruleValue; // stores value for nutrient comparison
 
   /*
-   * constructor TODO don't know if we want to keep this
+   * constructor takes in valid strings for nutrients, comparators and values
    */
   public Rule(String ruleNutrient, String comparator, Double ruleValue) {
     this.ruleNutrient = ruleNutrient;
@@ -67,9 +67,10 @@ public class Rule {
 
     // validate string
     String ruleNutrient = ruleArray[0];
-    if (ruleNutrient == null || !Nutrient.contains(ruleNutrient)) {
-      return "enter a valid nutrient";
-    }
+    if ((ruleNutrient == null) || 
+        (!ruleNutrient.equals("calories") && !ruleNutrient.equals("fat") &&
+        !ruleNutrient.equals("carbohydrate") && !ruleNutrient.equals("fiber") 
+        && !ruleNutrient.equals("protein"))) return "enter a valid nutrient";
 
     // validate comparator
     String comparator = ruleArray[1];
@@ -85,7 +86,7 @@ public class Rule {
         return "enter a valid nutrient amount";
 
       // parse double - will throw exception if not double
-      Double ruleValue = Double.parseDouble(doubleString);
+      Double.parseDouble(doubleString);
 
     } catch (Exception e) {
       return "enter a valid nutrient amount";
@@ -115,26 +116,6 @@ public class Rule {
     return ruleValue;
   }
 
-  /*
-   * returns true of food item matches on the rule conditions TODO do actually need this here? is
-   * this all handled in the B Tree? I presume so.
-   */
-  public boolean evalFoodItem(FoodItem foodItem) {
-
-    // gather nutrient information
-    Double nutrientValue = foodItem.getNutrientValue(ruleNutrient);
-
-    // compare with comparator from rule and return true if foodItem satisfies the rule
-    if (comparator.equals("==") && (nutrientValue.compareTo(ruleValue) == 0))
-      return true;
-    else if (comparator.equals(">=") && (nutrientValue.compareTo(ruleValue) >= 0))
-      return true;
-    else if (comparator.equals("<=") && (nutrientValue.compareTo(ruleValue) <= 0))
-      return true;
-
-    // otherwise, return false
-    return false;
-  }
 
   @Override
   public String toString() {
@@ -147,7 +128,7 @@ public class Rule {
     // create two food items
     FoodItem fi1 = new FoodItem("p1", "pasta");
     FoodItem fi2 = new FoodItem("p2", "pizza");
-    fi2.addNutrient("fat", 12.0);
+    fi1.addNutrient("fat", 12.0);
     fi2.addNutrient("carbs", 16.0);
 
     // parse rule; maybe use this code later
@@ -164,11 +145,6 @@ public class Rule {
       // test toString
       System.out.println("\nTesting rule: " + fatRule);
 
-      // test evaluating against food items
-      System.out
-          .println("Test evalFoodItem for " + fi1.getName() + ": " + fatRule.evalFoodItem(fi1));
-      System.out
-          .println("Test evalFoodItem for " + fi2.getName() + ": " + fatRule.evalFoodItem(fi2));
     }
 
   }

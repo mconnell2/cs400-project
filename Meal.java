@@ -9,7 +9,7 @@
  *
  * Semester: Fall 2018 Course: CS400
  * 
- * Due Date: 12/2/18 11:59 pm Version: 1.0
+ * Due Date: 12/16/18 11:59 pm Version: 1.0
  * 
  * Credits: none
  * Bugs: no known bugs
@@ -35,10 +35,11 @@ public class Meal {
   }
 
   /*
-   * retrieves meal
+   * retrieves sorted meal
    */
   public ObservableList<FoodItem> getMeal() {
-    return foodItemList;
+    return foodItemList.sorted((a, b) -> a.getName().toUpperCase()
+        .compareTo(b.getName().toUpperCase()));
   }
 
   /*
@@ -55,7 +56,6 @@ public class Meal {
   public void removeFoodItem(int index) {
     if ((index >= 0) && index < foodItemList.size())
       foodItemList.remove(index);
-    // TODO - show we throw an exception instead? We could a do try/catch around .remove method
   }
 
   /*
@@ -96,13 +96,6 @@ public class Meal {
     }
 
     return mealNutrients;
-  }
-
-  // TODO - not sure we need this for anything? It's not in our spec.
-  // I also needed to add a toString method in foodItem.
-  @Override
-  public String toString() {
-    return foodItemList.toString();
   }
 
   // Testing class
