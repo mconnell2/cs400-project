@@ -23,6 +23,8 @@
 package application;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,9 +69,13 @@ import javafx.util.Callback;
 public class Main extends Application {
 
   // Class variables
-  String nameFilter = "";
+  FoodData foodData = new FoodData();
+  ObservableList<FoodItem> foodItemList = FXCollections.observableArrayList();;
   Meal meal = new Meal();
-  ObservableList<FoodItem> foodItemList;
+  String nameFilter = "";
+  ObservableList<String> filterRules = FXCollections.observableArrayList();
+  ListView<FoodItem> mealList = new ListView<FoodItem>();
+  ListView<FoodItem> foodList = new ListView<FoodItem>();
 
 
   /**
@@ -87,10 +93,6 @@ public class Main extends Application {
     Color backgroundColor = Color.AZURE;
 
     // Variables used throughout method
-    ListView<FoodItem> mealList = new ListView<FoodItem>();
-    ListView<FoodItem> foodList = new ListView<FoodItem>();
-    FoodData foodData = new FoodData();
-    ObservableList<String> filterRules = FXCollections.observableArrayList();
     int buttonDefaultWidth = 125;
 
     // create horizontal box to add our grid elements
@@ -213,55 +215,25 @@ public class Main extends Application {
         ruleStage.setScene(scene);
 
         // handle closing window via Windows X - will save current name filter, update button color
-
         ruleStage.setOnCloseRequest(windowEvent -> {
+          
+          //retrieve name filter, apply filters, update list
           nameFilter = nameFilterTextField.getText();
-
-          // TODO this code is duplicative with save button below, should I make a helper method?
-          // TODO if so, can we move foodData to a class level variable?
-          // *dmb - I say make a helper method & go ahead and make foodData a class level variable
-          // if no filters applied
-          if (nameFilter.equals("") && filterRules.isEmpty()) {
-            filterButton.setStyle(null);
-            foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
-            foodList.setItems(foodItemList);
-            foodCount.setText("Food Count = " + foodItemList.size());
-            foodList.refresh();
-          }
-
-          // name filter, no rule filter
-          else if (!nameFilter.equals("") && filterRules.isEmpty()) {
-            filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
-          }
-
-          // rule filter, no name filter
-          else if (nameFilter.equals("") && !filterRules.isEmpty()) {
-            filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList =
-                FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
-          }
-
-          // both name and nutrient filters
-          else {
-            filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
-            foodItemList.retainAll(foodData.filterByNutrients(filterRules));
-          }
-
-          foodList.setItems(foodItemList);
+          boolean isListFiltered = closeFilterWindow();
+          
+          //update button highlighting and count
+          if (isListFiltered) filterButton.setStyle("-fx-base: #00b8e6;");
+          else filterButton.setStyle(null);
           foodCount.setText("Food Count = " + foodItemList.size());
-          foodList.refresh();
-
         });
+        
         ruleStage.show();
-
 
         ////////////////////////////////////////
         //// BUTTON ACTIONS FOR FILTER WINDOW////
         ////////////////////////////////////////
 
-        // add filter button will save rule or will show error message
+        // add filter button - will save rule or will show error message
         addFilterButton.setOnAction(actionEvent -> {
 
           // validate entered rule string
@@ -281,48 +253,23 @@ public class Main extends Application {
           }
         });
 
-        // remove filter button will remove current filter, if one is selected
+        // remove filter button - will remove current filter, if one is selected
         removeFilterButton.setOnAction(actionEvent -> {
           filterRules.remove(ruleListView.getSelectionModel().getSelectedItem());
           ruleListView.refresh();
         });
 
-        // accept button will save name filter and close window
+        // accept (save) button - will save current name filter, update button color
         acceptButton.setOnAction(actionEvent -> {
+          
+          //retrieve name filter, apply filters, update list
           nameFilter = nameFilterTextField.getText();
-
-          // if no filters applied
-          if (nameFilter.equals("") && filterRules.isEmpty()) {
-            filterButton.setStyle(null);
-            foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
-            foodList.setItems(foodItemList);
-            foodCount.setText("Food Count = " + foodItemList.size());
-            foodList.refresh();
-          }
-
-          // name filter, no rule filter
-          else if (!nameFilter.equals("") && filterRules.isEmpty()) {
-            filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
-          }
-
-          // rule filter, no name filter
-          else if (nameFilter.equals("") && !filterRules.isEmpty()) {
-            filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList =
-                FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
-          }
-
-          // both name and nutrient filters
-          else {
-            filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
-            foodItemList.retainAll(foodData.filterByNutrients(filterRules));
-          }
-
-          foodList.setItems(foodItemList);
+          boolean isListFiltered = closeFilterWindow();
+          
+          //update button highlighting and count
+          if (isListFiltered) filterButton.setStyle("-fx-base: #00b8e6;");
+          else filterButton.setStyle(null);
           foodCount.setText("Food Count = " + foodItemList.size());
-          foodList.refresh();
           ruleStage.close();
         });
 
@@ -442,10 +389,13 @@ public class Main extends Application {
                 Double.parseDouble(carbField.getText()), Double.parseDouble(fiberField.getText()),
                 Double.parseDouble(proteinField.getText()));
             foodData.addFoodItem(newFood);
+            foodItemList.add(newFood);
             foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+            foodItemList = foodItemList.sorted((a, b) -> a.getName().toUpperCase()
+                .compareTo(b.getName().toUpperCase()));
             foodList.setItems(foodItemList);
-            foodCount.setText("Food Count = " + foodItemList.size());
             foodList.refresh();
+            foodCount.setText("Food Count = " + foodItemList.size());
 
             newFoodStage.close();
           } catch (Exception ex) {
@@ -594,9 +544,12 @@ public class Main extends Application {
       if (foodItemsFile != null) {
         foodData.loadFoodItems(foodItemsFile.getAbsolutePath());
         foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
-        foodCount.setText("Food Count = " + foodItemList.size());
+        foodItemList = foodItemList.sorted((a, b) -> a.getName().toUpperCase()
+            .compareTo(b.getName().toUpperCase()));
         foodList.setItems(foodItemList);
         foodList.refresh();
+        foodCount.setText("Food Count = " + foodItemList.size());
+
       }
     });
 
@@ -671,6 +624,48 @@ public class Main extends Application {
     button.setText(name);
     button.setPrefWidth(width);
     return button;
+  }
+  
+ 
+  /**
+   * helper method for saving/closing filter window and updating list with filters
+   * TODO
+   * @return true if list is filtered
+   */
+  private boolean closeFilterWindow() {
+    boolean isListFiltered = false; 
+    
+    if (nameFilter.equals("") && filterRules.isEmpty()) {
+      foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+    }
+
+    // name filter, no rule filter
+    else if (!nameFilter.equals("") && filterRules.isEmpty()) {
+      isListFiltered = true;
+      foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
+    }
+
+    // rule filter, no name filter
+    else if (nameFilter.equals("") && !filterRules.isEmpty()) {
+      isListFiltered = true;
+      foodItemList =
+          FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
+    }
+
+    // both name and nutrient filters
+    else {
+      isListFiltered = true;
+      foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
+      foodItemList.retainAll(foodData.filterByNutrients(filterRules));
+    }
+   
+    //sort and refresh food list
+    foodItemList = foodItemList.sorted((a, b) -> a.getName().toUpperCase()
+        .compareTo(b.getName().toUpperCase()));
+    foodList.setItems(foodItemList);
+    foodList.refresh();
+    
+    return isListFiltered;
   }
 
   /**
