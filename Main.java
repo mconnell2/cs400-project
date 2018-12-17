@@ -389,7 +389,6 @@ public class Main extends Application {
                 Double.parseDouble(carbField.getText()), Double.parseDouble(fiberField.getText()),
                 Double.parseDouble(proteinField.getText()));
             foodData.addFoodItem(newFood);
-            foodItemList.add(newFood);
             foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
             foodItemList = foodItemList.sorted((a, b) -> a.getName().toUpperCase()
                 .compareTo(b.getName().toUpperCase()));
