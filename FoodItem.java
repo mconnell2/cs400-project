@@ -42,45 +42,6 @@ public class FoodItem {
   }
 
   /**
-   * Constructor for name and nutrients; food item will be assigned ID
-   * 
-   * @param name name of the food item
-   * @param calories in food item
-   * @param fat grams in food item
-   * @param carbs grams in food item
-   * @param fiber grams in food item
-   * @param protein grams in food item
-   */
-  public FoodItem(String name, Double calories, Double fat, Double carbs, Double fiber,
-      Double protein) {
-    if (calories < 0 || fat < 0 || carbs < 0 || fiber < 0 || protein < 0) {
-      throw new IllegalArgumentException("Nutrition cannot be a negative number");
-    }
-    this.id = randId();
-    this.name = name;
-    nutrients = new HashMap<String, Double>();
-    nutrients.put("calories", calories);
-    nutrients.put("fat", fat);
-    nutrients.put("carbohydrate", carbs);
-    nutrients.put("fiber", fiber);
-    nutrients.put("protein", protein);
-  }
-  
-  /**
-     * Create random 24 character String ID for manually added food item
-     * @return id for new item
-     */
-    private String randId() {
-    	String chars = "0123456789qwerytuiopasdfghjklzxcvbnmMNBVCXZASFDGHJKLPOIUYTREWQ";
-    	String id = "";
-    	Random c = new Random();
-    	while (id.length() < 25) {
-    		id=id+chars.charAt(c.nextInt(62));
-    	}
-    	return id;
-    }
-
-  /**
    * Gets the name of the food item
    * 
    * @return name of the food item
