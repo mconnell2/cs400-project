@@ -95,6 +95,17 @@ public class FoodData implements FoodDataADT<FoodItem> {
           .forEach(item -> this.addFoodItem(item));
     } catch (IOException e) {
       System.out.println("Failed to parse file: " + e.getMessage());
+    
+    /**
+     * Returns a subset of food items whose name contains a specified substring.
+     * @param substring - string filter for item names
+     * @return list of filtered food items
+     */
+    @Override
+    public List<FoodItem> filterByName(String substring) {
+    	return foodItemList.stream()
+    		.filter(item -> item.getName().toUpperCase().contains(substring.toUpperCase()))
+    		.collect(Collectors.toList());
     }
   }
 
