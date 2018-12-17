@@ -1,14 +1,19 @@
 /**
- * Filename: Main.java Project: Final Project - Food List Authors: Epic lecture 4 Julie Book -
- * jlsauer@wisc.edu David Billmire Mark Connell Michelle Lindblom
+ * Filename: Main.java 
+ * Project: Final Project - Food List 
+ * Authors: Epic lecture 4 
+ * Julie Book - jlsauer@wisc.edu 
+ * David Billmire - dbillmire@wisc.edu
+ * Mark Connell - mconnell2@wisc.edu
+ * Michelle Lindblom - mlindblom@wisc.edu
  *
  * Semester: Fall 2018 Course: CS400
  * 
  * Due Date: 12/2/18 11:59 pm Version: 1.0
  * 
- * Credits: none
- * https://stackoverflow.com/questions/41319752/listview-setcellfactory-with-generic-label set lable
- * to generic lable
+ * Credits: 
+ * https://stackoverflow.com/questions/41319752/listview-setcellfactory-with-generic-label set label
+ * to generic label
  * 
  * https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm - learning to do file chooser
  * 
@@ -43,11 +48,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -58,14 +66,14 @@ import javafx.util.Callback;
  */
 public class Main extends Application {
 
-
+  // Class variables
   String nameFilter = "";
   Meal meal = new Meal();
   ObservableList<FoodItem> foodItemList;
 
 
-  /*
-   * (non-Javadoc)
+  /**
+   * javafx start method. Called to set up the stage
    * 
    * @see javafx.application.Application#start(javafx.stage.Stage)
    */
@@ -73,24 +81,25 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
 
     // Info about Stage
-    int height = 500;
+    int height = 600;
+    int width = 1250;
     String font = "Verdana";
     Color backgroundColor = Color.AZURE;
-    
+
     // Variables used throughout method
     ListView<FoodItem> mealList = new ListView<FoodItem>();
     ListView<FoodItem> foodList = new ListView<FoodItem>();
     FoodData foodData = new FoodData();
     ObservableList<String> filterRules = FXCollections.observableArrayList();
     int buttonDefaultWidth = 125;
-    
+
     // create horizontal box to add our grid elements
     primaryStage.setTitle("Food Project");
     HBox hbox = new HBox(10);
     hbox.setTranslateX(10);
     hbox.setTranslateY(10);
     Group root = new Group(hbox);
-    Scene scene = new Scene(root, 1050, height, backgroundColor);
+    Scene scene = new Scene(root, width + 50, height, backgroundColor);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // Column 1 - Food List and Filters
@@ -98,11 +107,15 @@ public class Main extends Application {
     GridPane foodGrid = new GridPane();
     foodGrid.setHgap(10);
     foodGrid.setVgap(10);
-    foodGrid.setPrefHeight(height * 0.9);
+    foodGrid.setPrefSize(width * 0.425, height * 0.9);
+
+    // Food count
+    Text foodCount = new Text("Food Count = 0");
+    foodCount.setFont(Font.font(font, 12));
 
     // filter button
     Button filterButton = createButton("", 50);
-    Image filterImage = new Image(getClass().getResourceAsStream("filter.png"));
+    Image filterImage = new Image(getClass().getClassLoader().getResourceAsStream("application/filter.png"));
     filterButton.setGraphic(new ImageView(filterImage));
 
     filterButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -121,7 +134,7 @@ public class Main extends Application {
         Text nameFilterTitle = new Text("Name Filter");
         nameFilterTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
         nameFilterTitle.setFocusTraversable(true); // so that name field doesn't have focus
-                                                   // immediately
+        // immediately
         Text nutrientFilterTitle = new Text("Nutrient Filters");
         nutrientFilterTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
         Text ruleWarningText = new Text("Invalid rule."); // string will be updated later
@@ -194,48 +207,52 @@ public class Main extends Application {
 
         // prepare and show stage
         // Group filterRoot = new Group(filterVBox);
-        Scene scene = new Scene(filterVBox, 450, 450, Color.AZURE);
+        Scene scene = new Scene(filterVBox, 450, 450, backgroundColor);
         Stage ruleStage = new Stage();
         ruleStage.setTitle("Enter/Edit Filter(s)");
         ruleStage.setScene(scene);
 
         // handle closing window via Windows X - will save current name filter, update button color
-        
+
         ruleStage.setOnCloseRequest(windowEvent -> {
           nameFilter = nameFilterTextField.getText();
-          
-          //TODO this code is duplicative with save button below, should I make a helper method?
-          //TODO if so, can we move foodData to a class level variable?
-          //if no filters applied
+
+          // TODO this code is duplicative with save button below, should I make a helper method?
+          // TODO if so, can we move foodData to a class level variable?
+          // *dmb - I say make a helper method & go ahead and make foodData a class level variable
+          // if no filters applied
           if (nameFilter.equals("") && filterRules.isEmpty()) {
             filterButton.setStyle(null);
             foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
             foodList.setItems(foodItemList);
+            foodCount.setText("Food Count = " + foodItemList.size());
             foodList.refresh();
           }
-          
-          //name filter, no rule filter
+
+          // name filter, no rule filter
           else if (!nameFilter.equals("") && filterRules.isEmpty()) {
             filterButton.setStyle("-fx-base: #00b8e6;");
             foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
           }
-          
-          //rule filter, no name filter
-          else if (nameFilter.equals("") && !filterRules.isEmpty()) { 
+
+          // rule filter, no name filter
+          else if (nameFilter.equals("") && !filterRules.isEmpty()) {
             filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList = FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
+            foodItemList =
+                FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
           }
 
-          //both name and nutrient filters
+          // both name and nutrient filters
           else {
             filterButton.setStyle("-fx-base: #00b8e6;");
             foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
             foodItemList.retainAll(foodData.filterByNutrients(filterRules));
           }
-            
+
           foodList.setItems(foodItemList);
+          foodCount.setText("Food Count = " + foodItemList.size());
           foodList.refresh();
-          
+
         });
         ruleStage.show();
 
@@ -271,37 +288,40 @@ public class Main extends Application {
         });
 
         // accept button will save name filter and close window
-          acceptButton.setOnAction(actionEvent -> {
+        acceptButton.setOnAction(actionEvent -> {
           nameFilter = nameFilterTextField.getText();
-          
-          //if no filters applied
+
+          // if no filters applied
           if (nameFilter.equals("") && filterRules.isEmpty()) {
             filterButton.setStyle(null);
             foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
             foodList.setItems(foodItemList);
+            foodCount.setText("Food Count = " + foodItemList.size());
             foodList.refresh();
           }
-          
-          //name filter, no rule filter
+
+          // name filter, no rule filter
           else if (!nameFilter.equals("") && filterRules.isEmpty()) {
             filterButton.setStyle("-fx-base: #00b8e6;");
             foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
           }
-          
-          //rule filter, no name filter
-          else if (nameFilter.equals("") && !filterRules.isEmpty()) { 
+
+          // rule filter, no name filter
+          else if (nameFilter.equals("") && !filterRules.isEmpty()) {
             filterButton.setStyle("-fx-base: #00b8e6;");
-            foodItemList = FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
+            foodItemList =
+                FXCollections.observableArrayList(foodData.filterByNutrients(filterRules));
           }
 
-          //both name and nutrient filters
+          // both name and nutrient filters
           else {
             filterButton.setStyle("-fx-base: #00b8e6;");
             foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
             foodItemList.retainAll(foodData.filterByNutrients(filterRules));
           }
-            
+
           foodList.setItems(foodItemList);
+          foodCount.setText("Food Count = " + foodItemList.size());
           foodList.refresh();
           ruleStage.close();
         });
@@ -318,7 +338,7 @@ public class Main extends Application {
     foodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
 
     // Food list
-    foodList.setPrefWidth(400);
+    foodList.setPrefSize(width * 0.425, height * 0.75);
     foodList.setCellFactory(new Callback<ListView<FoodItem>, ListCell<FoodItem>>() {
       @Override
       public ListCell<FoodItem> call(ListView<FoodItem> param) {
@@ -336,10 +356,6 @@ public class Main extends Application {
         return cell;
       }
     });
-    
-    // Food count
-    Text foodCount = new Text("Food Count = 0");
-    foodCount.setFont(Font.font(font, 12));
 
     // Add elements to the Grid
     foodGrid.add(foodTitle, 1, 1, 1, 1);
@@ -368,111 +384,106 @@ public class Main extends Application {
     Button addFoodButton = createButton("Add New Food", buttonDefaultWidth);
     addFoodButton.setOnAction(new EventHandler<ActionEvent>() {
 
-        @Override
-        public void handle(ActionEvent event) {
-        // TODO Auto-generated method stub
-          System.out.println("Add New Food Button pressed");
-            
-          ///////////////////////
-          //ADD NEW FOOD WINDOW//
-          ///////////////////////
-          
-          //Make the VBox
-          VBox addNewFoodVBox = new VBox(5);
-          addNewFoodVBox.setPadding(new Insets(10));
-          addNewFoodVBox.setBackground(null);
-          
-          //set the Scene and stage
-          Scene scene = new Scene(addNewFoodVBox, 450, 300, Color.LIGHTSTEELBLUE);
-          Stage newFoodStage = new Stage();
-          newFoodStage.setTitle("Add New Food Item");
-          newFoodStage.setScene(scene);
-          
-          //set title text
-          Text newFoodTitle = new Text("Add New Food Item");
-          newFoodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
-          addNewFoodVBox.getChildren().add(newFoodTitle);
-          
-          //ADD ALL FIELDS
-          //name field
-          TextField nameField = addFoodItemField(addNewFoodVBox,"Name:","e.g. cupcake");
-          TextField calField = addFoodItemField(addNewFoodVBox,"Calories:","e.g. 1000");
-          TextField fatField = addFoodItemField(addNewFoodVBox,"Fat:","e.g. 17");
-          TextField fiberField = addFoodItemField(addNewFoodVBox,"Fiber:","e.g. 0");
-          TextField proteinField = addFoodItemField(addNewFoodVBox,"Protein:","e.g. 5");
-          TextField carbField = addFoodItemField(addNewFoodVBox,"Carbohydrates:","e.g. 124");
-          /// END FIELD CREATION
-          
-          //DRAW THE POPUP
-          Region Vspacer = new Region();
-          VBox.setVgrow(Vspacer, Priority.ALWAYS);
-          
-          HBox addFoodButtonsBox = new HBox(10);
-          Region Hspacer = new Region();
-          HBox.setHgrow(Hspacer, Priority.ALWAYS);
-          
-          Button addFoodButton = createButton("_Add",buttonDefaultWidth);
-          addFoodButton.setPrefWidth(150);
-          Button cancelAddButton = createButton("_Cancel",buttonDefaultWidth);
-          
-          cancelAddButton.setPrefWidth(150);
-          addFoodButtonsBox.getChildren().addAll(Hspacer,addFoodButton,cancelAddButton);
-          addNewFoodVBox.getChildren().addAll(Vspacer,addFoodButtonsBox);
-          
-          //HANDLE EVENTS
-          cancelAddButton.setOnAction(e -> newFoodStage.close());
-          addFoodButton.setOnAction(e -> {
-            try {
-            //TODO better validation here would be nice, like a proper validation function
-                FoodItem newFood = new FoodItem(nameField.getText(),
-                    Double.parseDouble(calField.getText()),
-                    Double.parseDouble(fatField.getText()),
-                    Double.parseDouble(fiberField.getText()),
-                    Double.parseDouble(proteinField.getText()),
-                    Double.parseDouble(carbField.getText()));
-                    foodData.addFoodItem(newFood);
-                    //TODO also need to refresh the foodlist grid here
-                    foodList.refresh();
-                    // TODO this didn't work 
-                    newFoodStage.close();
-            }catch(Exception ex) {
-                Alert buttonAlert3 = 
-                        new Alert(AlertType.WARNING, "Invalid entry");
-                                        buttonAlert3.showAndWait()
-                        .filter(response -> response == ButtonType.OK);
-            }
-          });
-          
-          newFoodStage.show();
-          
-          cancelAddButton.requestFocus();
-          // Call the pop up
-          
-        }
+      @Override
+      public void handle(ActionEvent event) {
 
-    public TextField addFoodItemField(VBox addNewFoodVBox, String labelText, String ghostText) {
+        ///////////////////////
+        // ADD NEW FOOD WINDOW//
+        ///////////////////////
+
+        // Make the VBox
+        VBox addNewFoodVBox = new VBox(5);
+        addNewFoodVBox.setPadding(new Insets(10));
+        addNewFoodVBox.setBackground(null);
+
+        // set the Scene and stage
+        Scene scene = new Scene(addNewFoodVBox, 450, 300, backgroundColor);
+        Stage newFoodStage = new Stage();
+        newFoodStage.setTitle("Add New Food Item");
+        newFoodStage.setScene(scene);
+
+        // set title text
+        Text newFoodTitle = new Text("Add New Food Item");
+        newFoodTitle.setFont(Font.font(font, FontWeight.BOLD, 20));
+        addNewFoodVBox.getChildren().add(newFoodTitle);
+
+        // ADD ALL FIELDS
+        TextField nameField = addFoodItemField(addNewFoodVBox, "Name:", "e.g. cupcake");
+        TextField calField = addFoodItemField(addNewFoodVBox, "Calories:", "e.g. 1000");
+        TextField fatField = addFoodItemField(addNewFoodVBox, "Fat:", "e.g. 17");
+        TextField carbField = addFoodItemField(addNewFoodVBox, "Carbohydrates:", "e.g. 124");
+        TextField fiberField = addFoodItemField(addNewFoodVBox, "Fiber:", "e.g. 0");
+        TextField proteinField = addFoodItemField(addNewFoodVBox, "Protein:", "e.g. 5");
+
+        /// END FIELD CREATION
+
+        // DRAW THE POPUP
+        Region Vspacer = new Region();
+        VBox.setVgrow(Vspacer, Priority.ALWAYS);
+
+        HBox addFoodButtonsBox = new HBox(10);
+        Region Hspacer = new Region();
+        HBox.setHgrow(Hspacer, Priority.ALWAYS);
+
+        Button addFoodButton = createButton("_Add", buttonDefaultWidth);
+        addFoodButton.setPrefWidth(150);
+        Button cancelAddButton = createButton("_Cancel", buttonDefaultWidth);
+
+        cancelAddButton.setPrefWidth(150);
+        addFoodButtonsBox.getChildren().addAll(Hspacer, addFoodButton, cancelAddButton);
+        addNewFoodVBox.getChildren().addAll(Vspacer, addFoodButtonsBox);
+
+        // HANDLE EVENTS
+        cancelAddButton.setOnAction(e -> newFoodStage.close());
+        addFoodButton.setOnAction(e -> {
+          try {
+            FoodItem newFood = new FoodItem(nameField.getText(),
+                Double.parseDouble(calField.getText()), Double.parseDouble(fatField.getText()),
+                Double.parseDouble(carbField.getText()), Double.parseDouble(fiberField.getText()),
+                Double.parseDouble(proteinField.getText()));
+            foodData.addFoodItem(newFood);
+            foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+            foodList.setItems(foodItemList);
+            foodCount.setText("Food Count = " + foodItemList.size());
+            foodList.refresh();
+
+            newFoodStage.close();
+          } catch (Exception ex) {
+            Alert buttonAlert3 = new Alert(AlertType.WARNING, "Invalid entry");
+            buttonAlert3.showAndWait().filter(response -> response == ButtonType.OK);
+          }
+        });
+
+        newFoodStage.show();
+
+        cancelAddButton.requestFocus();
+        // Call the pop up
+
+      }
+
+      public TextField addFoodItemField(VBox addNewFoodVBox, String labelText, String ghostText) {
         HBox NameHBox = new HBox(10);
-          Region spacer = new Region();
-          HBox.setHgrow(spacer, Priority.ALWAYS);
-          Label newFoodName = new Label(labelText);
-          TextField newFoodNameField = new TextField(); 
-          newFoodNameField.setPromptText(ghostText);
-          NameHBox.getChildren().addAll(newFoodName,spacer,newFoodNameField);
-          addNewFoodVBox.getChildren().add(NameHBox);
-          return newFoodNameField;
-    }
-      });
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Label newFoodName = new Label(labelText);
+        TextField newFoodNameField = new TextField();
+        newFoodNameField.setPromptText(ghostText);
+        NameHBox.getChildren().addAll(newFoodName, spacer, newFoodNameField);
+        addNewFoodVBox.getChildren().add(NameHBox);
+        return newFoodNameField;
+      }
+    });
     // clear Meal
     Button clearMealButton = createButton("Clear Meal", buttonDefaultWidth);
 
     // add food to meal
     Button addToMealButton = createButton("", buttonDefaultWidth);
-    Image addImage = new Image(getClass().getResourceAsStream("ArrowRight.png"));
+    Image addImage = new Image(getClass().getClassLoader().getResourceAsStream("application/ArrowRight.png"));
     addToMealButton.setGraphic(new ImageView(addImage));
 
     // remove food from meal
     Button removeButton = createButton("", buttonDefaultWidth);
-    Image removeImage = new Image(getClass().getResourceAsStream("ArrowLeft.png"));
+    Image removeImage = new Image(getClass().getClassLoader().getResourceAsStream("application/ArrowLeft.png"));
     removeButton.setGraphic(new ImageView(removeImage));
 
     // Add elements to button Grid
@@ -490,7 +501,7 @@ public class Main extends Application {
     GridPane mealGrid = new GridPane();
     mealGrid.setHgap(10);
     mealGrid.setVgap(10);
-    mealGrid.setPrefHeight(height * 0.9);
+    mealGrid.setPrefSize(width * 0.425, height * 0.9);
 
     // Meal Title
     Text mealTitle = new Text("Meal");
@@ -498,7 +509,7 @@ public class Main extends Application {
 
     // Meal List
     mealList.setItems(meal.getMeal());
-    mealList.setPrefWidth(400);
+    mealList.setPrefSize(width * 0.425, height * 0.75);
     mealList.setCellFactory(new Callback<ListView<FoodItem>, ListCell<FoodItem>>() {
       @Override
       public ListCell<FoodItem> call(ListView<FoodItem> param) {
@@ -537,17 +548,11 @@ public class Main extends Application {
 
     Text protein = new Text("Protein: 0 g");
     protein.setFont(Font.font(font, 16));
-    
-    ObservableList<PieChart.Data> pieChartData =
-        FXCollections.observableArrayList(
-        new PieChart.Data("Fat", 0),
-        new PieChart.Data("Carbohydrate", 0),
-        new PieChart.Data("Fiber", 0),
-        new PieChart.Data("Protein", 0));
-    PieChart pieChart = new PieChart(pieChartData);
-    
+
+    PieChart pieChart = new PieChart();
+
     // Add info to Meal Grid
-    mealGrid.add(mealTitle, 1, 1, 1, 1);
+    mealGrid.add(mealTitle, 1, 1, 2, 1);
     mealGrid.add(mealList, 1, 2, 2, 1);
     mealGrid.add(nutritionTitle, 1, 3, 2, 1);
     mealGrid.add(calories, 1, 4, 1, 1);
@@ -563,6 +568,7 @@ public class Main extends Application {
     GridPane lastColumnGrid = new GridPane();
     lastColumnGrid.setHgap(10);
     lastColumnGrid.setVgap(10);
+    lastColumnGrid.setPrefWidth(width * 0.1);
 
     // Help Button
     Button helpButton = createButton("?", 20);
@@ -570,6 +576,7 @@ public class Main extends Application {
 
     // Add to Grid/HBox
     lastColumnGrid.add(helpButton, 1, 1);
+    GridPane.setHalignment(helpButton, HPos.LEFT);
     hbox.getChildren().add(lastColumnGrid);
 
 
@@ -577,52 +584,46 @@ public class Main extends Application {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // Button Actions
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // Load Button Action
     loadButton.setOnAction(actionEvent -> {
-       FileChooser fileChooser = new FileChooser();
-       fileChooser.setTitle("Open Food Item File");
-       
-       File foodItemsFile = fileChooser.showOpenDialog(primaryStage);
-       if (foodItemsFile != null) {
-         foodData.loadFoodItems(foodItemsFile.getName());
-         foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
-         foodCount.setText("Food Count = " + foodItemList.size());
-         foodList.setItems(foodItemList);
-         foodList.refresh();
-       }
+      FileChooser fileChooser = new FileChooser();
+      fileChooser.setTitle("Open Food Item File");
+
+      File foodItemsFile = fileChooser.showOpenDialog(primaryStage);
+      if (foodItemsFile != null) {
+        foodData.loadFoodItems(foodItemsFile.getAbsolutePath());
+        foodItemList = FXCollections.observableArrayList(foodData.getAllFoodItems());
+        foodCount.setText("Food Count = " + foodItemList.size());
+        foodList.setItems(foodItemList);
+        foodList.refresh();
+      }
     });
-    
+
     // Save Button Action
     saveButton.setOnAction(actionEvent -> {
-        // TODO Save Button NOT working
-        System.out.println("Save Button pressed");
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Food List");
-        
-        File saveFile = fileChooser.showSaveDialog(primaryStage);
-        foodData.saveFoodItems(saveFile.getName());
+      FileChooser fileChooser = new FileChooser();
+      fileChooser.setTitle("Save Food List");
+
+      File saveFile = fileChooser.showSaveDialog(primaryStage);
+      foodData.saveFoodItems(saveFile.getAbsolutePath());
     });
-    
-    // Add Food Button Action
-    //addFoodButton.setOnAction(actionEvent -> {
-        // TODO Finish Add Food Button
-      //  System.out.println("Add New Food Button pressed");
-    //});
-    
+
     // Clear Meal Button Action
     clearMealButton.setOnAction(actionEvent -> {
-        meal.clearMeal();
-        mealList.refresh();
-        updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
+      meal.clearMeal();
+      mealList.refresh();
+      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
     });
-    
+
     // Add To Meal Button Action
     addToMealButton.setOnAction(actionEvent -> {
       FoodItem foodItem = foodList.getSelectionModel().getSelectedItem();
-      meal.addFoodItem(foodItem);
-      mealList.refresh();
-      updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
+      if (foodItem != null) {
+        meal.addFoodItem(foodItem);
+        mealList.refresh();
+        updateNutrition(mealGrid, calories, fat, carbs, fiber, protein, pieChart);
+      }
     });
 
     // Remove From Meal Button Action - needs to be after nutrition text created
@@ -634,8 +635,21 @@ public class Main extends Application {
 
     // help button
     helpButton.setOnAction(actionEvent -> {
-      // TODO Finish this
-      System.out.println("Help button pressed");
+
+      WebView helpWebView = new WebView();
+      WebEngine helpWebEngine = helpWebView.getEngine();
+      String helpFile = this.getClass().getClassLoader().getResource("application/help.html").toString();
+      
+      helpWebEngine.load(helpFile);
+      StackPane helpPane = new StackPane();
+      helpPane.getChildren().add(helpWebView);
+      Scene helpScene = new Scene(helpPane, 640, 800, Color.ANTIQUEWHITE);
+
+      Stage helpStage = new Stage();
+      helpStage.setTitle("Help");
+      helpStage.setScene(helpScene);
+      helpStage.show();
+
     });
 
     // Show Stage
@@ -659,19 +673,14 @@ public class Main extends Application {
     return button;
   }
 
-  /*
+  /**
    * Updates the nutrition info Grid This occurs upon adding new food items and clearing the meal
    * 
    * @param mealGrid that we are updating
-   * 
    * @param calories text in the grid
-   * 
    * @param fat text in the grid
-   * 
    * @param carbohydrate text in the grid
-   * 
    * @param fiber text in the grid
-   * 
    * @param protein text in the grid
    */
   private void updateNutrition(GridPane mealGrid, Text calories, Text fat, Text carbs, Text fiber,
@@ -681,7 +690,7 @@ public class Main extends Application {
     double carbsInMeal = 0;
     double fiberInMeal = 0;
     double proteinInMeal = 0;
-    
+
     if (meal.analyzeMeal().get("calories") != null) {
       caloriesInMeal = meal.analyzeMeal().get("calories");
     }
@@ -705,26 +714,24 @@ public class Main extends Application {
     protein.setText("Protein: " + proteinInMeal + " g");
 
     mealGrid.getChildren().removeAll(calories, fat, carbs, fiber, protein, pieChart);
-    mealGrid.add(calories, 1, 4, 1, 1);
-    mealGrid.add(fat, 1, 5, 1, 1);
-    mealGrid.add(carbs, 1, 6, 1, 1);
-    mealGrid.add(fiber, 1, 7, 1, 1);
-    mealGrid.add(protein, 1, 8, 1, 1);
-    
-    if (fatInMeal == 0 & carbsInMeal == 0 & fiberInMeal == 0 & proteinInMeal == 0) {
-      return;  //do not draw pie graph
-    }
-    
-    ObservableList<PieChart.Data> pieChartData =
-        FXCollections.observableArrayList(
-        new PieChart.Data("Fat", fatInMeal),
-        new PieChart.Data("Carbohydrate", carbsInMeal),
-        new PieChart.Data("Fiber", fiberInMeal),
-        new PieChart.Data("Protein", proteinInMeal));
-    pieChart.setData(pieChartData);
-    mealGrid.add(pieChart, 2, 4, 1, 5);
-  }
+    mealGrid.add(calories, 1, 4);
+    mealGrid.add(fat, 1, 5);
+    mealGrid.add(carbs, 1, 6);
+    mealGrid.add(fiber, 1, 7);
+    mealGrid.add(protein, 1, 8);
 
+    if (fatInMeal == 0 & carbsInMeal == 0 & fiberInMeal == 0 & proteinInMeal == 0) {
+      return; // do not draw pie graph
+    }
+
+    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+        new PieChart.Data("Fat", fatInMeal), new PieChart.Data("Carbohydrate", carbsInMeal),
+        new PieChart.Data("Fiber", fiberInMeal), new PieChart.Data("Protein", proteinInMeal));
+    pieChart.setData(pieChartData);
+    pieChart.setLabelsVisible(false);
+    pieChart.setLegendSide(Side.LEFT);
+    mealGrid.add(pieChart, 2, 5, 1, 4);
+  }
 
   /*
    * main method that will be run by default and will launch the UI

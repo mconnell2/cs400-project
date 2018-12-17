@@ -1,8 +1,23 @@
+/**
+ * Filename: FoodData.java 
+ * Project: Final Project - Food List 
+ * Authors: Epic lecture 4 
+ * Julie Book - jlsauer@wisc.edu 
+ * David Billmire - dbillmire@wisc.edu
+ * Mark Connell - mconnell2@wisc.edu
+ * Michelle Lindblom - mlindblom@wisc.edu
+ *
+ * Semester: Fall 2018 Course: CS400
+ * 
+ * Due Date: 12/2/18 11:59 pm Version: 1.0
+ * 
+ * Credits: none
+ * Bugs: no known bugs
+ */
 package application;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -11,18 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
  * This class represents the backend for managing all 
  * the operations associated with FoodItems
- * JLB edited, and again
- *MHC was here too.
- *MAL test
  * 
- * @author sapan (sapan@cs.wisc.edu)
  */
 public class FoodData implements FoodDataADT<FoodItem> {
     
@@ -45,6 +54,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	return foodItemList.toString();
     }
     
+    /**
+     * Saves current food items to a file in .csv format.
+     * @param filename - name of the file to save the food items to
+     */
     public void saveFoodItems(String filename) {
     	//Set up print writer
     	FileWriter fwOutput = null;
@@ -88,14 +101,15 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		}
     }
     
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByName(java.lang.String)
+    /**
+     * Returns a subset of food items whose name contains a specified substring.
+     * @param substring - string filter for item names
+     * @return list of filtered food items
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
     	return foodItemList.stream()
-    		.filter(item -> item.getName().contains(substring))
+    		.filter(item -> item.getName().toUpperCase().contains(substring.toUpperCase()))
     		.collect(Collectors.toList());
     }
 
@@ -192,10 +206,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
     private static FoodItem parseLine(String line) {
     	FoodItem food = null;
     	String[] parts = line.split(",");
-    	if (parts.length > 1) {
+    	if (parts.length > 1 && parts[0].length() > 0 && parts[1].length() > 0	) {
     		food = new FoodItem(parts[0], parts[1]);
     		for (int i=2; i<parts.length; i+=2) {
-    			food.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+    			if (parts[i].length() > 0 && parts[i+1].length() > 0) {
+    				food.addNutrient(parts[i], Double.parseDouble(parts[i+1]));
+    			}
     		}
     	}
     	return food;
@@ -213,12 +229,18 @@ public class FoodData implements FoodDataADT<FoodItem> {
     		line = String.join(",", food.getID(), food.getName());
     		
     		for (Map.Entry<String, Double> pair : food.getNutrients().entrySet()) {
-    			line = String.join(",", line, pair.getKey(), pair.getValue().toString());
+    			line = String.join(",", line, pair.getKey().toLowerCase(), pair.getValue().toString());
     		}
     	}
     	return line;
     }
     
+    /**
+     * Writes a line of fooditem data to a provided file writer
+     * 
+     * @param writer - file writer object to write to
+     * @param line - string to write
+     */
     private static void writeDataLine(FileWriter writer, String line) {
     	if (writer != null && line.length() > 0) {
     		try {
@@ -248,7 +270,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	System.out.println("Added one food " + data.toString());
     	
     	
-    	//Load lotsa food
+    	//Load more food
     	data.loadFoodItems("foodItems.txt");
     	System.out.println("Added many foods " + data.toString());
     	

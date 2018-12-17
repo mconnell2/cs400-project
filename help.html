@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<h1>Food Meal Planner</h1>
+
+<h2>Overview</h2>
+<p>Welcome to the CS400 Food and Meal Planner System. This helpful application takes the guesswork out of meal-planning by supporting a simple, intuitive workflow for food and meal management.
+With this application you can manage a list of food items and combine these items into simple meals and quickly analyze the nutritional content of your meals.</p>
+
+<h2>Getting Started</h2>
+<lo>
+<li>Click the Load from File button and choose your food *.csv file.</li>
+<li>Add a food item to the meal using the Right arrow button <img src="ArrowRight.png"></li>
+<li>Remove a food item from the meal using the Left arrow button <img src="ArrowLeft.png"></li>
+<li>Have fun, and stay healthy!</li>
+</ol>
+
+<h2>Features</h2>
+<h3>The Food List</h3>
+<p>The Food List is your master list of all available food items. You can populate the list from a saved food.csv file or by adding new food items manually. Loaded food items may be added to the
+ meal using the Right <img src="ArrowRight.png"> and Left <img src="ArrowLeft.png"> arrow buttons. You can also restrict the number of food items displayed using custom filters <img src="filter.png"</p>
+<h4>Loading food from a file</h4>
+<p>Food items may be loaded from a food.csv file. Click the Load from File button to open a file browser and select the food file to load. Multiple food files may be loaded into the food list.</p>
+<h4>Adding new food items</h4>
+<p>New food items may be defined using the Add New Food button. This button will open up a form where you can define a new food item and specify its nutritional information.</p>
+<h4>Filtering food</h4>
+<p>You can restrict the items displayed on the Food List by defining custom filters using the filter button <img src="filter.png">. 
+The filter feature allows you to restrict the list to only foods whose names contain specific text.
+<h5>Nutrition Filters</h5>
+You can also define one or more nutrition filters in the following format:</p>
+<q>nutrient [==|<=|>=] value</q>
+<p>Define nutrition filters by specifying a nutrient and a comparison rule. You may specify as many nutirent rules as you like. Food items must satisfy
+ all nutrient rules to appear in the list. Available nutrients are: </p>
+<ol>
+<li>calories</li>
+<li>carbohydrate</li>
+<li>protein</li>
+<li>fat</li>
+<li>fiber</li>
+</ol>
+<h4>Saving Food Items</h4>
+<p>You can save your food list for re-use in a food.csv file. Click the Save to File button to open a file browser and select/create the file to save your food items to.</p>
+<h3>Meal List</h3>
+The Meal List tracks the individual food items that comprise your meal. A nutritional analysis of the meal is automatically updated
+ as food items are added or removed from the list. You can add or remove items individually using the Right <img src="ArrowRight.png"> and Left 
+ <img src="ArrowLeft.png"> arrow buttons. You can also clear the entire meal using the Clear Meal button.</p>
+</html>

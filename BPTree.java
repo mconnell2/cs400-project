@@ -1,3 +1,19 @@
+/**
+ * Filename: BPTree.java 
+ * Project: Final Project - Food List 
+ * Authors: Epic lecture 4 
+ * Julie Book - jlsauer@wisc.edu 
+ * David Billmire - dbillmire@wisc.edu
+ * Mark Connell - mconnell2@wisc.edu
+ * Michelle Lindblom - mlindblom@wisc.edu
+ *
+ * Semester: Fall 2018 Course: CS400
+ * 
+ * Due Date: 12/2/18 11:59 pm Version: 1.0
+ * 
+ * Credits: none
+ * Bugs: no known bugs
+ */
 package application;
 
 import java.util.ArrayList;
@@ -46,10 +62,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         root = new InternalNode();     
     }
     
-    
-    /*
-     * (non-Javadoc)
-     * @see BPTreeADT#insert(java.lang.Object, java.lang.Object)
+    /**
+     * Inserts a new key-value pair in to the tree
+     * @param key - Key to insert
+     * @param value - value to insert
      */
     @Override
     public void insert(K key, V value) {
@@ -66,11 +82,16 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
     }
     
-    
-    /*
-     * (non-Javadoc)
-     * @see BPTreeADT#rangeSearch(java.lang.Object, java.lang.String)
-     */
+   /**
+    * Searches for values whose key value matches a specified search criteria.
+    * Returns all values for which <key> <comparator> is true. Comparators
+    * are ==, =>, or <=
+    * 
+    * @param key - key value to search for
+    * @param comparator - comparison operation to use for the search.
+    * 
+    * @return list of values whose keys match the criteria
+    */
     @Override
     public List<V> rangeSearch(K key, String comparator) {
     	if (!comparator.contentEquals(">=") && 
@@ -80,10 +101,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         return root.rangeSearch(key, comparator);
     }
     
-    
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Generates a string representation of the tree.
+     * @return string describing the tree
      */
     @Override
     public String toString() {
@@ -209,8 +229,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#getFirstLeafKey()
+         * Returns the first leaf key of the first child node
          */
         K getFirstLeafKey() {
         	Node child = children.get(0);
@@ -218,16 +237,14 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#isOverflow()
+         * Checks if the current number of children exceeds the branching factor
          */
         boolean isOverflow() {
         	return (children.size() > branchingFactor);
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#insert(java.lang.Comparable, java.lang.Object)
+         * inserts a new key-value pair into the node
          */
         void insert(K key, V value) {
         	int childIndex = getChildIndex(key);
@@ -255,8 +272,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 		}
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#split()
+         * Splits a node into two nodes
+         * @return new Right child of the split node
          */
         Node split() {
             
@@ -277,8 +294,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#rangeSearch(java.lang.Comparable, java.lang.String)
+         * Performs a range search on an internal node
+         * 
+         * @param key - key value to compare child node keys to
+         * @param comparator - comparator for the key comparison
          */
         List<V> rangeSearch(K key, String comparator) {
         	Node child = children.get(getChildIndex(key));
@@ -325,24 +344,23 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#getFirstLeafKey()
+         * Returns the key of the first leaf
          */
         K getFirstLeafKey() {
             return keys.get(0);
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#isOverflow()
+         * Determines if the current number of keys exceed the branching factor
          */
         boolean isOverflow() {
             return (keys.size() > branchingFactor);
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#insert(Comparable, Object)
+         * Inserts a new key-value pair into this node
+         * @param key - key to insert
+         * @param value - value to insert
          */
         void insert(K key, V value) {
             int counter = 0;
@@ -354,8 +372,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#split()
+         * Splits a leaf node and returns the new right-most node
          */
         Node split() {
             int length = keys.size();
@@ -379,8 +396,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         
         /**
-         * (non-Javadoc)
-         * @see BPTree.Node#rangeSearch(Comparable, String)
+         * Performs a range search on a leaf node
+         * @param key - value to compare each key to
+         * @param comparator - comparator to use when comparing keys
          */
         List<V> rangeSearch(K key, String comparator) {
         	//search index is equal to or greater than search key
