@@ -659,7 +659,7 @@ public class Main extends Application {
     else {
       isListFiltered = true;
       foodItemList = FXCollections.observableArrayList(foodData.filterByName(nameFilter));
-      foodItemList.retainAll(foodData.filterByNutrients(filterRules));
+      if (!foodItemList.isEmpty()) foodItemList.retainAll(foodData.filterByNutrients(filterRules));
     }
    
     //sort and refresh food list
