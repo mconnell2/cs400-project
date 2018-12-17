@@ -420,6 +420,20 @@ public class Main extends Application {
         // Call the pop up
 
       }
+      
+      /**
+       * Create random 24 character String ID for manually added food item
+       * @return id for new item
+       */
+      private String randId() {
+      	String chars = "0123456789qwerytuiopasdfghjklzxcvbnmMNBVCXZASFDGHJKLPOIUYTREWQ";
+      	String id = "";
+      	Random c = new Random();
+      	while (id.length() < 25) {
+      		id=id+chars.charAt(c.nextInt(62));
+      	}
+      	return id;
+      }
 
       public TextField addFoodItemField(VBox addNewFoodVBox, String labelText, String ghostText) {
         HBox NameHBox = new HBox(10);
