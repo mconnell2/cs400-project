@@ -21,7 +21,7 @@ package application;
  */
 public class Rule {
 
-  String ruleNutrient; // stores name of nutrient TODO - use enum?
+  String ruleNutrient; // stores name of nutrient
   String comparator; // stores comparator for nutrient comparison
   Double ruleValue; // stores value for nutrient comparison
 
@@ -67,9 +67,10 @@ public class Rule {
 
     // validate string
     String ruleNutrient = ruleArray[0];
-    if (ruleNutrient == null || !Nutrient.contains(ruleNutrient)) {
-      return "enter a valid nutrient";
-    }
+    if ((ruleNutrient == null) || 
+        (!ruleNutrient.equals("calories") && !ruleNutrient.equals("fat") &&
+        !ruleNutrient.equals("carbohydrate") && !ruleNutrient.equals("fiber") 
+        && !ruleNutrient.equals("protein"))) return "enter a valid nutrient";
 
     // validate comparator
     String comparator = ruleArray[1];
