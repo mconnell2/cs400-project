@@ -35,10 +35,11 @@ public class Meal {
   }
 
   /*
-   * retrieves meal
+   * retrieves sorted meal
    */
   public ObservableList<FoodItem> getMeal() {
-    return foodItemList;
+    return foodItemList.sorted((a, b) -> a.getName().toUpperCase()
+        .compareTo(b.getName().toUpperCase()));
   }
 
   /*
