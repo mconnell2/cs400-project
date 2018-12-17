@@ -398,7 +398,7 @@ public class Main extends Application {
 
             newFoodStage.close();
           } catch (Exception ex) {
-            Alert buttonAlert3 = new Alert(AlertType.WARNING, "Invalid entry");
+            Alert buttonAlert3 = new Alert(AlertType.WARNING, "Invalid entry - " + ex.getMessage());
             buttonAlert3.showAndWait().filter(response -> response == ButtonType.OK);
           }
         });
@@ -632,7 +632,6 @@ public class Main extends Application {
  
   /**
    * helper method for saving/closing filter window and updating list with filters
-   * TODO
    * @return true if list is filtered
    */
   private boolean closeFilterWindow() {

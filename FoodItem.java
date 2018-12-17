@@ -53,6 +53,9 @@ public class FoodItem {
    */
   public FoodItem(String name, Double calories, Double fat, Double carbs, Double fiber,
       Double protein) {
+    if (calories < 0 || fat < 0 || carbs < 0 || fiber < 0 || protein < 0) {
+      throw new IllegalArgumentException("Nutrition cannot be a negative number");
+    }
     this.id = randId();
     this.name = name;
     nutrients = new HashMap<String, Double>();
