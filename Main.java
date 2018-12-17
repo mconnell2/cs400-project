@@ -547,8 +547,12 @@ public class Main extends Application {
             .compareTo(b.getName().toUpperCase()));
         foodList.setItems(foodItemList);
         foodList.refresh();
+        
+        //update food count and clear filter buttons
         foodCount.setText("Food Count = " + foodItemList.size());
-
+        nameFilter = "";
+        filterRules.clear();
+        filterButton.setStyle(null);
       }
     });
 
